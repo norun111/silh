@@ -2,7 +2,6 @@ import com.typesafe.sbt.SbtScalariform._
 
 import scalariform.formatter.preferences._
 
-
 name := """silhouette"""
 organization := "silhouette"
 
@@ -49,3 +48,31 @@ libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.2.12"
 
 // Adds additional packages into conf/routes
 // play.sbt.routes.RoutesKeys.routesImport += "silhouette.binders._"
+
+// Play dependency injection in controller
+routesGenerator := InjectedRoutesGenerator
+
+scalacOptions ++= Seq(
+  "-deprecation", // Emit warning and location for usages of deprecated APIs.
+  "-feature", // Emit warning and location for usages of features that should be imported explicitly.
+  "-unchecked", // Enable additional warnings where generated code depends on assumptions.
+  "-Xfatal-warnings", // Fail the compilation if there are any warnings.
+  //"-Xlint", // Enable recommended additional warnings.
+  "-Ywarn-dead-code", // Warn when dead code is identified.
+  "-Ywarn-numeric-widen", // Warn when numerics are widened.
+  // Play has a lot of issues with unused imports and unsued params
+  // https://github.com/playframework/playframework/issues/6690
+  // https://github.com/playframework/twirl/issues/105
+  "-Xlint:-unused,_"
+)
+
+//********************************************************
+// Scalariform settings
+//********************************************************
+
+scalariformAutoformat := true
+
+ScalariformKeys.preferences := ScalariformKeys.preferences.value
+  .setPreference(FormatXml, false)
+  .setPreference(DoubleIndentConstructorArguments, false)
+  .setPreference(DanglingCloseParenthesis, Preserve)
