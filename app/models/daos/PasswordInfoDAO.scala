@@ -25,7 +25,8 @@ case class PersistentPasswordInfo(loginInfo: LoginInfo, authInfo: PasswordInfo)
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDAO @Inject()(db : DB)(implicit val classTag: ClassTag[PasswordInfo]) extends DelegableAuthInfoDAO[PasswordInfo] {
+//implicit val classTag: ClassTag[PasswordInfo]
+class PasswordInfoDAO @Inject() (db: DB)() extends DelegableAuthInfoDAO[PasswordInfo] {
 
   implicit val passwordInfoFormat = Json.format[PasswordInfo]
   implicit val persistentPasswordInfoFormat = Json.format[PersistentPasswordInfo]
@@ -41,7 +42,7 @@ class PasswordInfoDAO @Inject()(db : DB)(implicit val classTag: ClassTag[Passwor
   def find(loginInfo: LoginInfo) = {
 
     val passwordInfo: Future[Option[PersistentPasswordInfo]] = collection
-      .find(Json.obj( "loginInfo" -> loginInfo ))
+      .find(Json.obj("loginInfo" -> loginInfo))
       .one[PersistentPasswordInfo]
 
     passwordInfo.flatMap {

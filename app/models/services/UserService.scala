@@ -14,11 +14,12 @@ import scala.concurrent.Future
 trait UserService extends IdentityService[User] {
 
   /**
-   * Retrives a user that matches the specified userId.
-   * @param userId The user id to retriece a user.
-   * @return The retrieved user or None if no user could be retrieved for the given user id.
+   * Retrieves a user that matches the specified ID.
+   *
+   * @param id The ID to retrieve a user.
+   * @return The retrieved user or None if no user could be retrieved for the given ID.
    */
-  def retrieve(userId: UUID): Future[Option[User]]
+  def retrieve(id: UUID): Future[Option[User]]
 
   /**
    * Saves a user.
@@ -38,3 +39,4 @@ trait UserService extends IdentityService[User] {
    */
   def save(profile: CommonSocialProfile): Future[User]
 }
+

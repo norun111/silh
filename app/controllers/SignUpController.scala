@@ -6,53 +6,80 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services.AvatarService
-import com.mohiva.play.silhouette.api.util.PasswordHasher
-import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import com.mohiva.play.silhouette.impl.providers._
 import forms.SignUpForm
 import models.User
-import models.services.{MailService, UserService}
-import play.api.i18n.{Messages, MessagesApi}
+import models.services.{ AuthTokenService, UserService }
+import play.api.i18n.{ I18nSupport, Messages, MessagesApi }
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.mvc.Action
+import play.api.libs.mailer.{ Email, MailerClient }
+import play.api.mvc.Controller
+import utils.auth.DefaultEnv
 
 import scala.concurrent.Future
 
 /**
- * The sign up controller.
+ * The `Sign Up` controller.
  *
- * @param messagesApi The Play messages API.
- * @param env The Silhouette environment.
- * @param userService The user service implementation.
- * @param authInfoRepository The auth info repository implementation.
- * @param avatarService The avatar service implementation.
- * @param passwordHasher The password hasher implementation.
+ * @param messagesApi            The Play messages API.
+ * @param silhouette             The Silhouette stack.
+ * @param userService            The user service implementation.
+ * @param authInfoRepository     The auth info repository implementation.
+ * @param authTokenService       The auth token service implementation.
+ * @param avatarService          The avatar service implementation.
+ * @param passwordHasherRegistry The password hasher registry.
+ * @param mailerClient           The mailer client.
+ * @param webJarAssets           The webjar assets implementation.
  */
 class SignUpController @Inject() (
-                                   val messagesApi: MessagesApi,
-                                   val env: Environment[User, CookieAuthenticator],
-                                   userService: UserService,
-                                   authInfoRepository: AuthInfoRepository,
-                                   avatarService: AvatarService,
-                                   passwordHasher: PasswordHasher,
-                                   mailService: MailService)
-  extends Silhouette[User, CookieAuthenticator] {
+  val messagesApi: MessagesApi,
+  silhouette: Silhouette[DefaultEnv],
+  userService: UserService,
+  authInfoRepository: AuthInfoRepository,
+  authTokenService: AuthTokenService,
+  avatarService: AvatarService,
+  passwordHasherRegistry: PasswordHasherRegistry,
+  mailerClient: MailerClient,
+  implicit val webJarAssets: WebJarAssets
+)
+    extends Controller with I18nSupport {
 
   /**
-   * Registers a new user.
+   * Views the `Sign Up` page.
    *
    * @return The result to display.
    */
-  def signUp = Action.async { implicit request =>
+  def view = silhouette.UnsecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.signUp(SignUpForm.form)))
+  }
+
+  /**
+   * Handles the submitted form.
+   *
+   * @return The result to display.
+   */
+  def submit = silhouette.UnsecuredAction.async { implicit request =>
     SignUpForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.signUp(form))),
       data => {
+        val result = Redirect(routes.SignUpController.view()).flashing("info" -> Messages("sign.up.email.sent", data.email))
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {
           case Some(user) =>
-            Future.successful(Redirect(routes.ApplicationController.signUp()).flashing("error" -> Messages("user.exists")))
+            val url = routes.SignInController.view().absoluteURL()
+            mailerClient.send(Email(
+              subject = Messages("email.already.signed.up.subject"),
+              from = Messages("Mister FROM <from@gmail.com>"),
+              to = Seq(data.email),
+              bodyText = Some(views.txt.emails.alreadySingedUp(user, url).body),
+              bodyHtml = Some(views.html.emails.alreadySingedUp(user, url).body)
+            ))
+
+            Future.successful(result)
           case None =>
-            val authInfo = passwordHasher.hash(data.password)
+            println("not yet")
+            val authInfo = passwordHasherRegistry.current.hash(data.password)
             val user = User(
               userID = UUID.randomUUID(),
               loginInfo = loginInfo,
@@ -61,38 +88,27 @@ class SignUpController @Inject() (
               fullName = Some(data.firstName + " " + data.lastName),
               email = Some(data.email),
               avatarURL = None,
-              mailConfirmed = None
+              activated = false
             )
             for {
               avatar <- avatarService.retrieveURL(data.email)
               user <- userService.save(user.copy(avatarURL = avatar))
-              _ <- mailService.sendConfirm(user)
               authInfo <- authInfoRepository.add(loginInfo, authInfo)
-              authenticator <- env.authenticatorService.create(loginInfo)
-              value <- env.authenticatorService.init(authenticator)
-              result <- env.authenticatorService.embed(value, Redirect(routes.ApplicationController.index()))
+              authToken <- authTokenService.create(user.userID)
             } yield {
-              env.eventBus.publish(SignUpEvent(user, request, request2Messages))
-              env.eventBus.publish(LoginEvent(user, request, request2Messages))
+              val url = routes.ActivateAccountController.activate(authToken.id).absoluteURL()
+              mailerClient.send(Email(
+                subject = Messages("email.already.signed.up.subject"),
+                from = Messages("Mister FROM <from@gmail.com>"),
+                to = Seq(data.email),
+                bodyText = Some(views.txt.emails.singUp(user, url).body),
+                bodyHtml = Some(views.html.emails.signUp(user, url).body)
+              ))
+              silhouette.env.eventBus.publish(SignUpEvent(user, request))
               result
             }
         }
       }
     )
   }
-
-  def mailConfirm(token: String) = Action.async { implicit request =>
-    mailService.consumeToken(UUID.fromString(token), "confirm").
-      flatMap{
-        case Some(userId) =>
-          userService.retrieve(userId).map{
-            case Some(user) =>
-              userService.save(user.copy(mailConfirmed = Some(true)))
-              Redirect(routes.ApplicationController.index())
-            case None => Redirect(routes.ApplicationController.error())
-          }
-        case None => Future(Redirect(routes.ApplicationController.error()))
-      }
-  }
-
 }
