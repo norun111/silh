@@ -2,27 +2,30 @@ package models.daos
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import play.api.libs.concurrent.Execution.Implicits._
+import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 
+import scala.concurrent._
 import scala.collection.mutable
 import scala.concurrent.Future
-
 import javax.inject.Inject
 import play.api.libs.json._
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.reflect.ClassTag
+
+// Reactive Mongo imports
 import reactivemongo.api._
 
-import play.modules.reactivemongo.json._
-import play.modules.reactivemongo.json.collection._
+// Reactive Mongo plugin, including the JSON-specialized collection
+import reactivemongo.play.json._
+import reactivemongo.play.json.collection.JSONCollection
 
 case class PersistentPasswordInfo(loginInfo: LoginInfo, authInfo: PasswordInfo)
 
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDAO @Inject() (db : DB) extends DelegableAuthInfoDAO[PasswordInfo] {
+class PasswordInfoDAO @Inject()(db : DB)(implicit val classTag: ClassTag[PasswordInfo]) extends DelegableAuthInfoDAO[PasswordInfo] {
 
   implicit val passwordInfoFormat = Json.format[PasswordInfo]
   implicit val persistentPasswordInfoFormat = Json.format[PersistentPasswordInfo]
