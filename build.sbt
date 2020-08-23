@@ -38,6 +38,7 @@ libraryDependencies ++= defaultDependencies
 
 libraryDependencies ++= Seq(
   evolutions, jdbc, guice, ehcache, filters,
+  "org.reactivemongo" %% "reactivemongo-play-json-compat" % "0.20.12-play26",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.20.11-play26",
   "com.mohiva" %% "play-silhouette" % "6.1.1",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "6.1.1",
