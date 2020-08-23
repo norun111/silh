@@ -1,20 +1,22 @@
 package models.daos
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
+import com.mohiva.play.silhouette.api.util.PasswordInfo
+import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.impl.providers.OpenIDInfo
 import models.daos.OpenIDInfoDAO._
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.collection.mutable
 import scala.concurrent.Future
+import scala.reflect.ClassTag
 
 /**
  * The DAO to store the OpenID information.
  *
  * Note: Not thread safe, demo only.
  */
-class OpenIDInfoDAO extends DelegableAuthInfoDAO[OpenIDInfo] {
+class OpenIDInfoDAO(implicit val classTag: ClassTag[PasswordInfo]) extends DelegableAuthInfoDAO[OpenIDInfo] {
 
   /**
    * Finds the auth info which is linked with the specified login info.
