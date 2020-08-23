@@ -6,16 +6,17 @@ import com.mohiva.play.silhouette.api.services._
 import com.mohiva.play.silhouette.api.util._
 import com.mohiva.play.silhouette.api.{Environment, EventBus}
 import com.mohiva.play.silhouette.impl.authenticators._
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
+import com.mohiva.play.silhouette.persistence.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.impl.providers._
 import com.mohiva.play.silhouette.impl.providers.oauth1._
 import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{CookieSecretProvider, CookieSecretSettings}
 import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
 import com.mohiva.play.silhouette.impl.providers.oauth2._
-import com.mohiva.play.silhouette.impl.providers.oauth2.state.{CookieStateProvider, CookieStateSettings, DummyStateProvider}
+import com.mohiva.play.silhouette.password.{ BCryptPasswordHasher, BCryptSha256PasswordHasher }
+import com.mohiva.play.silhouette.impl.providers.oauth1.secrets._
 import com.mohiva.play.silhouette.impl.providers.openid.YahooProvider
 import com.mohiva.play.silhouette.impl.providers.openid.services.PlayOpenIDService
-import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
+import com.mohiva.play.silhouette.persistence.repositories.DelegableAuthInfoRepository
 import com.mohiva.play.silhouette.impl.services._
 import com.mohiva.play.silhouette.impl.util._
 import models.User
@@ -29,6 +30,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
 import reactivemongo.api._
+
 
 /**
  * The Guice module which wires all Silhouette dependencies.
@@ -47,9 +49,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       import com.typesafe.config.ConfigFactory
       import scala.concurrent.ExecutionContext.Implicits.global
       import scala.collection.JavaConversions._
+      import reactivemongo.api.MongoConnection
 
       val config = ConfigFactory.load
-      val driver = new MongoDriver
+      val driver = new reactivemongo.api.MongoDriver
       val connection = driver.connection(
         config.getStringList("mongodb.servers"),
         MongoConnectionOptions(),
@@ -117,7 +120,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
                                      facebookProvider: FacebookProvider,
                                      googleProvider: GoogleProvider,
                                      vkProvider: VKProvider,
-                                     clefProvider: ClefProvider,
                                      twitterProvider: TwitterProvider,
                                      xingProvider: XingProvider,
                                      yahooProvider: YahooProvider): SocialProviderRegistry = {
@@ -129,7 +131,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       vkProvider,
       xingProvider,
       yahooProvider,
-      clefProvider
     ))
   }
 
