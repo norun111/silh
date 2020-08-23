@@ -29,6 +29,7 @@ object SignInForm {
   case class Data(
                    email: String,
                    password: String,
-                   rememberMe: Boolean)
+                   rememberMe: Boolean
+                 )
 }
 
