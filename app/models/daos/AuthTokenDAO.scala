@@ -1,6 +1,5 @@
 package models.daos
 
-
 import java.util.UUID
 
 import models.AuthToken
