@@ -29,9 +29,9 @@ object SignUpForm {
    * @param password The password of the user.
    */
   case class Data(
-                   firstName: String,
-                   lastName: String,
-                   email: String,
-                   password: String
-                 )
+    firstName: String,
+    lastName: String,
+    email: String,
+    password: String
+  )
 }
