@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
   "com.adrianhurt" %% "play-bootstrap" % "1.0-P25-B3",
   "com.mohiva" %% "play-silhouette-testkit" % "4.0.0" % "test",
   specs2 % Test,
-//  cache,
+  cache,
   filters
 )
 
