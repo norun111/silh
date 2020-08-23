@@ -16,8 +16,9 @@ import scala.reflect.ClassTag
  *
  * Note: Not thread safe, demo only.
  */
-class OpenIDInfoDAO(implicit val classTag: ClassTag[PasswordInfo]) extends DelegableAuthInfoDAO[OpenIDInfo] {
-  
+//implicit val classTag: ClassTag[PasswordInfo]
+class OpenIDInfoDAO() extends DelegableAuthInfoDAO[OpenIDInfo] {
+
   /**
    * Finds the auth info which is linked with the specified login info.
    *
