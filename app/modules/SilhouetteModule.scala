@@ -77,10 +77,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideEnvironment(
-                          userService: UserService,
-                          authenticatorService: AuthenticatorService[CookieAuthenticator],
-                          eventBus: EventBus
-                        ): Environment[DefaultEnv] = {
+    userService: UserService,
+    authenticatorService: AuthenticatorService[CookieAuthenticator],
+    eventBus: EventBus
+  ): Environment[DefaultEnv] = {
 
     Environment[DefaultEnv](
       userService,
@@ -104,14 +104,14 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideSocialProviderRegistry(
-                                     facebookProvider: FacebookProvider,
-                                     googleProvider: GoogleProvider,
-                                     vkProvider: VKProvider,
-                                     clefProvider: ClefProvider,
-                                     twitterProvider: TwitterProvider,
-                                     xingProvider: XingProvider,
-                                     yahooProvider: YahooProvider
-                                   ): SocialProviderRegistry = {
+    facebookProvider: FacebookProvider,
+    googleProvider: GoogleProvider,
+    vkProvider: VKProvider,
+    clefProvider: ClefProvider,
+    twitterProvider: TwitterProvider,
+    xingProvider: XingProvider,
+    yahooProvider: YahooProvider
+  ): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       googleProvider,
@@ -252,11 +252,11 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideAuthInfoRepository(
-                                 passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo],
-                                 oauth1InfoDAO: DelegableAuthInfoDAO[OAuth1Info],
-                                 oauth2InfoDAO: DelegableAuthInfoDAO[OAuth2Info],
-                                 openIDInfoDAO: DelegableAuthInfoDAO[OpenIDInfo]
-                               ): AuthInfoRepository = {
+    passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo],
+    oauth1InfoDAO: DelegableAuthInfoDAO[OAuth1Info],
+    oauth2InfoDAO: DelegableAuthInfoDAO[OAuth2Info],
+    openIDInfoDAO: DelegableAuthInfoDAO[OpenIDInfo]
+  ): AuthInfoRepository = {
 
     new DelegableAuthInfoRepository(passwordInfoDAO, oauth1InfoDAO, oauth2InfoDAO, openIDInfoDAO)
   }
@@ -274,13 +274,13 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideAuthenticatorService(
-                                   @Named("authenticator-cookie-signer") cookieSigner: CookieSigner,
-                                   @Named("authenticator-crypter") crypter: Crypter,
-                                   fingerprintGenerator: FingerprintGenerator,
-                                   idGenerator: IDGenerator,
-                                   configuration: Configuration,
-                                   clock: Clock
-                                 ): AuthenticatorService[CookieAuthenticator] = {
+    @Named("authenticator-cookie-signer") cookieSigner: CookieSigner,
+    @Named("authenticator-crypter") crypter: Crypter,
+    fingerprintGenerator: FingerprintGenerator,
+    idGenerator: IDGenerator,
+    configuration: Configuration,
+    clock: Clock
+  ): AuthenticatorService[CookieAuthenticator] = {
 
     val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
     val encoder = new CrypterAuthenticatorEncoder(crypter)
@@ -308,11 +308,11 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideOAuth1TokenSecretProvider(
-                                        @Named("oauth1-token-secret-cookie-signer") cookieSigner: CookieSigner,
-                                        @Named("oauth1-token-secret-crypter") crypter: Crypter,
-                                        configuration: Configuration,
-                                        clock: Clock
-                                      ): OAuth1TokenSecretProvider = {
+    @Named("oauth1-token-secret-cookie-signer") cookieSigner: CookieSigner,
+    @Named("oauth1-token-secret-crypter") crypter: Crypter,
+    configuration: Configuration,
+    clock: Clock
+  ): OAuth1TokenSecretProvider = {
 
     val settings = configuration.underlying.as[CookieSecretSettings]("silhouette.oauth1TokenSecretProvider")
     new CookieSecretProvider(settings, cookieSigner, crypter, clock)
@@ -329,10 +329,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideOAuth2StateProvider(
-                                  idGenerator: IDGenerator,
-                                  @Named("oauth2-state-cookie-signer") cookieSigner: CookieSigner,
-                                  configuration: Configuration, clock: Clock
-                                ): OAuth2StateProvider = {
+    idGenerator: IDGenerator,
+    @Named("oauth2-state-cookie-signer") cookieSigner: CookieSigner,
+    configuration: Configuration, clock: Clock
+  ): OAuth2StateProvider = {
 
     val settings = configuration.underlying.as[CookieStateSettings]("silhouette.oauth2StateProvider")
     new CookieStateProvider(settings, idGenerator, cookieSigner, clock)
@@ -358,9 +358,9 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideCredentialsProvider(
-                                  authInfoRepository: AuthInfoRepository,
-                                  passwordHasherRegistry: PasswordHasherRegistry
-                                ): CredentialsProvider = {
+    authInfoRepository: AuthInfoRepository,
+    passwordHasherRegistry: PasswordHasherRegistry
+  ): CredentialsProvider = {
 
     new CredentialsProvider(authInfoRepository, passwordHasherRegistry)
   }
@@ -375,10 +375,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideFacebookProvider(
-                               httpLayer: HTTPLayer,
-                               stateProvider: OAuth2StateProvider,
-                               configuration: Configuration
-                             ): FacebookProvider = {
+    httpLayer: HTTPLayer,
+    stateProvider: OAuth2StateProvider,
+    configuration: Configuration
+  ): FacebookProvider = {
 
     new FacebookProvider(httpLayer, stateProvider, configuration.underlying.as[OAuth2Settings]("silhouette.facebook"))
   }
@@ -393,10 +393,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideGoogleProvider(
-                             httpLayer: HTTPLayer,
-                             stateProvider: OAuth2StateProvider,
-                             configuration: Configuration
-                           ): GoogleProvider = {
+    httpLayer: HTTPLayer,
+    stateProvider: OAuth2StateProvider,
+    configuration: Configuration
+  ): GoogleProvider = {
 
     new GoogleProvider(httpLayer, stateProvider, configuration.underlying.as[OAuth2Settings]("silhouette.google"))
   }
@@ -411,10 +411,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideVKProvider(
-                         httpLayer: HTTPLayer,
-                         stateProvider: OAuth2StateProvider,
-                         configuration: Configuration
-                       ): VKProvider = {
+    httpLayer: HTTPLayer,
+    stateProvider: OAuth2StateProvider,
+    configuration: Configuration
+  ): VKProvider = {
 
     new VKProvider(httpLayer, stateProvider, configuration.underlying.as[OAuth2Settings]("silhouette.vk"))
   }
@@ -442,10 +442,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideTwitterProvider(
-                              httpLayer: HTTPLayer,
-                              tokenSecretProvider: OAuth1TokenSecretProvider,
-                              configuration: Configuration
-                            ): TwitterProvider = {
+    httpLayer: HTTPLayer,
+    tokenSecretProvider: OAuth1TokenSecretProvider,
+    configuration: Configuration
+  ): TwitterProvider = {
 
     val settings = configuration.underlying.as[OAuth1Settings]("silhouette.twitter")
     new TwitterProvider(httpLayer, new PlayOAuth1Service(settings), tokenSecretProvider, settings)
@@ -461,10 +461,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideXingProvider(
-                           httpLayer: HTTPLayer,
-                           tokenSecretProvider: OAuth1TokenSecretProvider,
-                           configuration: Configuration
-                         ): XingProvider = {
+    httpLayer: HTTPLayer,
+    tokenSecretProvider: OAuth1TokenSecretProvider,
+    configuration: Configuration
+  ): XingProvider = {
 
     val settings = configuration.underlying.as[OAuth1Settings]("silhouette.xing")
     new XingProvider(httpLayer, new PlayOAuth1Service(settings), tokenSecretProvider, settings)
@@ -481,11 +481,11 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   @Provides
   def provideYahooProvider(
-                            cacheLayer: CacheLayer,
-                            httpLayer: HTTPLayer,
-                            client: OpenIdClient,
-                            configuration: Configuration
-                          ): YahooProvider = {
+    cacheLayer: CacheLayer,
+    httpLayer: HTTPLayer,
+    client: OpenIdClient,
+    configuration: Configuration
+  ): YahooProvider = {
 
     val settings = configuration.underlying.as[OpenIDSettings]("silhouette.yahoo")
     new YahooProvider(httpLayer, new PlayOpenIDService(client, settings), settings)
