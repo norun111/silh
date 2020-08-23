@@ -14,8 +14,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import reactivemongo.api._
 
-import play.modules.reactivemongo.json._
-import play.modules.reactivemongo.json.collection._
+// Reactive Mongo plugin, including the JSON-specialized collection
+import reactivemongo.play.json._
+import reactivemongo.play.json.collection.JSONCollection
 
 /**
  * Give access to the user object.
