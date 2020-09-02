@@ -1,7 +1,6 @@
 package models
 
 import java.util.UUID
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 
