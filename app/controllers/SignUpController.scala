@@ -67,6 +67,7 @@ class SignUpController @Inject() (
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {
           case Some(user) =>
+            println("already")
             val url = routes.SignInController.view().absoluteURL()
             mailerClient.send(Email(
               subject = Messages("email.already.signed.up.subject"),
@@ -96,13 +97,14 @@ class SignUpController @Inject() (
               authInfo <- authInfoRepository.add(loginInfo, authInfo)
               authToken <- authTokenService.create(user.userID)
             } yield {
-              val url = routes.ActivateAccountController.activate(authToken.id).absoluteURL()
+              val mailurl = routes.ActivateAccountController.activate(authToken.id).absoluteURL()
+              println(mailurl)
               mailerClient.send(Email(
                 subject = Messages("email.already.signed.up.subject"),
                 from = Messages("Mister FROM <from@gmail.com>"),
                 to = Seq(data.email),
-                bodyText = Some(views.txt.emails.singUp(user, url).body),
-                bodyHtml = Some(views.html.emails.signUp(user, url).body)
+                bodyText = Some(views.txt.emails.singUp(user, mailurl).body),
+                bodyHtml = Some(views.html.emails.signUp(user, mailurl).body)
               ))
               silhouette.env.eventBus.publish(SignUpEvent(user, request))
               result
