@@ -56,7 +56,7 @@ class ActivateAccountController @Inject() (
             subject = Messages("email.activate.account.subject"),
             from = Messages("email.from"),
             to = Seq(decodedEmail),
-            //            bodyText = Some(views.txt.emails.activateAccount(user, url).body),
+            bodyText = Some(views.txt.emails.activateAccount(user, url).body),
             bodyHtml = Some(views.html.emails.activateAccount(user, url).body)
           ))
           result
