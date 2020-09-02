@@ -34,5 +34,7 @@ libraryDependencies ++= Seq(
   filters
 )
 
+fork in run := false
+
 libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.2.12"
 routesGenerator := InjectedRoutesGenerator
