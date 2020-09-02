@@ -23,7 +23,9 @@ case class User(
     lastName: Option[String],
     fullName: Option[String],
     email: Option[String],
+    goal: List[Goal] = List(),
     avatarURL: Option[String],
+
     activated: Boolean
 ) extends Identity {
 
