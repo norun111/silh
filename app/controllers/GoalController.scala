@@ -22,6 +22,7 @@ class GoalController extends Controller {
 
   def index = Action {
     println(goals.find.results)
+
     Ok(views.html.goals.index(goals.find.results))
   }
 }
