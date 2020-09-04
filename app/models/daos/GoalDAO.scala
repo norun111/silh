@@ -1,14 +1,15 @@
 package models.daos
 
-import play.api._
-import play.api.mvc._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.json._
-import models._
-import reactivemongo.api._
-import play.modules.reactivemongo.MongoController
-import play.modules.reactivemongo.json.collection.JSONCollection
+import org.mongodb.scala.{ Document, MongoClient, MongoCollection, MongoDatabase }
+import Helpers._
+import models.Goal
 
-object GoalDAO extends Controller with MongoController {
-  def collection: JSONCollection = db.collection[JSONCollection]("goal")
+object GoalDAO {
+  val mongoClient: MongoClient = MongoClient()
+
+  // Databaseを取得する
+  val database: MongoDatabase = mongoClient.getDatabase("silhouette")
+
+  // Collectionを取得する
+  val goals: MongoCollection[Document] = database.getCollection("goal")
 }
