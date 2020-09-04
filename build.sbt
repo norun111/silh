@@ -18,7 +18,6 @@ resolvers += Resolver.jcenterRepo
 resolvers += "typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.20.11-play25",
   "org.reactivemongo" %% "reactivemongo-play-json" % "0.20.11-play25",
   "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
