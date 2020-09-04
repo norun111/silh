@@ -1,28 +1,38 @@
 package controllers
 
 import models._
-import play.api.mvc._
+import javax.inject._
 import play.api._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.daos.GoalDAO._
 import reactivemongo.api._
 import scala.concurrent.Future
 import play.modules.reactivemongo._
 import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.api.commands.bson.BSONCountCommandImplicits._
 import org.mongodb.scala._
 import org.mongodb.scala.model.Updates._
 import org.mongodb.scala.model.Filters._
+import reactivemongo.api.bson._
 import models.daos.Helpers._
 import org.mongodb.scala.model.Projections
+import repositories.GoalRepository
 
-class GoalController extends Controller {
+@Singleton
+class GoalController @Inject()(goalRepo: GoalRepository) extends Controller {
+
+  def collection: reactivemongo.play.json.collection.JSONCollection = db.collection[reactivemongo.play.json.collection.JSONCollection]("goal")
 
   def index = Action {
-    println(goals.find.results)
-
     Ok(views.html.goals.index(goals.find.results))
+  }
+
+  def listGoals = Action.async {
+    goalRepo.list().map {
+      goals => Ok(Json.toJson(goals))
+    }
   }
 }
