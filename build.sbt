@@ -14,10 +14,10 @@ scalaVersion := "2.11.8"
 
 resolvers += Resolver.jcenterRepo
 // Resolver is needed only for SNAPSHOT versions
+resolvers += "typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
-  "org.reactivemongo" %% "reactivemongo-play-json" % "0.11.14",
   "com.mohiva" %% "play-silhouette" % "4.0.0",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
   "com.mohiva" %% "play-silhouette-persistence" % "4.0.0",
