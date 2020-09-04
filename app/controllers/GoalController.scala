@@ -10,9 +10,13 @@ import models._
 import reactivemongo.api._
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
+import models.daos.GoalDAO._
 
 class GoalController extends Controller {
 
-  def index = TODO
-
+  def index = Action {
+    val goals = indexGoals
+    println((goals))
+    Ok(views.html.goals.index(goals))
+  }
 }
