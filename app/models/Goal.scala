@@ -12,6 +12,6 @@ case class Goal(
 )
 
 object Goal {
-  implicit val jsonFormat = Json.format[Goal]
+  implicit val jsonFormat: OFormat[Goal] = Json.format[Goal]
 }
 
