@@ -6,17 +6,22 @@ import play.api._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
-import models._
-import reactivemongo.api._
-import play.modules.reactivemongo.MongoController
-import play.modules.reactivemongo.json.collection.JSONCollection
+import javax.inject.Inject
 import models.daos.GoalDAO._
+import reactivemongo.api._
+import scala.concurrent.Future
+import play.modules.reactivemongo._
+import play.modules.reactivemongo.json.collection.JSONCollection
+import org.mongodb.scala._
+import org.mongodb.scala.model.Updates._
+import org.mongodb.scala.model.Filters._
+import models.daos.Helpers._
+import org.mongodb.scala.model.Projections
 
 class GoalController extends Controller {
 
   def index = Action {
-    val goals = indexGoals
-    println((goals))
-    Ok(views.html.goals.index(goals))
+    println(goals.find.results)
+    Ok(views.html.goals.index(goals.find.results))
   }
 }
