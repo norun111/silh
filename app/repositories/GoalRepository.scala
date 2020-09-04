@@ -6,7 +6,7 @@ import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 import models.Goal
 import reactivemongo.bson.BSONObjectID
 import org.mongodb.scala.ReadPreference
@@ -14,17 +14,17 @@ import reactivemongo.bson.BSONDocument
 import reactivemongo.api._
 import reactivemongo.api.commands.WriteResult
 
-class GoalRepository @Inject()(
-                              implicit ec: ExecutionContext,
-                              reactiveMongoApi: ReactiveMongoApi
-                              ) {
+class GoalRepository @Inject() (
+    implicit
+    ec: ExecutionContext,
+    reactiveMongoApi: ReactiveMongoApi
+) {
   private def collection: Future[JSONCollection] =
     reactiveMongoApi.database.map(_.collection("goal"))
 
   def list(limit: Int = 100): Future[Seq[Goal]] =
     collection.flatMap(_.find(BSONDocument.empty)
-        .cursor[Goal]().collect[Seq](limit, Cursor.FailOnError[Seq[Goal]]())
-    )
+      .cursor[Goal]().collect[Seq](limit, Cursor.FailOnError[Seq[Goal]]()))
 
   def create(goal: Goal): Future[WriteResult] =
     collection.flatMap((_.insert(goal)))
@@ -33,7 +33,8 @@ class GoalRepository @Inject()(
     collection.flatMap(_.find(BSONDocument("_id" -> id)).one[Goal])
 
   def update(id: BSONObjectID, goal: Goal): Future[Option[Goal]] =
-    collection.flatMap(_.findAndUpdate(BSONDocument("_id" -> id),
+    collection.flatMap(_.findAndUpdate(
+      BSONDocument("_id" -> id),
       BSONDocument(
         f"$$set" -> BSONDocument(
           "name" -> goal.name,
@@ -46,5 +47,5 @@ class GoalRepository @Inject()(
 
   def destroy(id: BSONObjectID): Future[Option[Goal]] =
     collection.flatMap(_.findAndRemove(BSONDocument("_id" ->
-    id)).map(_.result[Goal]))
+      id)).map(_.result[Goal]))
 }
