@@ -20,7 +20,8 @@ resolvers += "typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 libraryDependencies ++= Seq(
   "org.reactivemongo" %% "reactivemongo-play-json" % "0.20.11-play25",
   "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
+  "org.reactivemongo" %% "reactivemongo" % "0.11.14",
+//  "org.reactivemongo" %% "play2-reactivemongo" % "0.20.11-play25",
   "com.mohiva" %% "play-silhouette" % "4.0.0",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
   "com.mohiva" %% "play-silhouette-persistence" % "4.0.0",
