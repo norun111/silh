@@ -12,11 +12,13 @@ version := "4.0.0"
 
 scalaVersion := "2.11.8"
 
+resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += Resolver.jcenterRepo
 // Resolver is needed only for SNAPSHOT versions
 resolvers += "typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.20.11-play25",
   "org.reactivemongo" %% "reactivemongo-play-json" % "0.20.11-play25",
   "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
