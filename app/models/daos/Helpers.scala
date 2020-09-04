@@ -1,6 +1,7 @@
 package models.daos
 
 import java.util.concurrent.TimeUnit
+import models.Goal
 
 import org.mongodb.scala.{ Completed, Document, Observable }
 
