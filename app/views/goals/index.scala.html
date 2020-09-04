@@ -4,5 +4,7 @@
 @(goals :Seq[Document])
 
 @for(goal <- goals){
-    @goal.map()
+    @goal.map { g =>
+      @g._2
+    }
 }
