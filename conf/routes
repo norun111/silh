@@ -26,7 +26,7 @@ GET         /account/activate/:token         controllers.ActivateAccountControll
 
 # Goal
 GET         /goals                           controllers.GoalController.listGoals
-POST        /goals                           controllers.GoalController.createGoal
+POST        /goals/create                    controllers.GoalController.createGoal
 GET         /goals/:id                       controllers.GoalController.readGoal(id: reactivemongo.bson.BSONObjectID)
 PUT         /goals/:id                       controllers.GoalController.updateGoal(id: reactivemongo.bson.BSONObjectID)
 DELETE      /goals/:id                       controllers.GoalController.deleteGoal(id: reactivemongo.bson.BSONObjectID)
