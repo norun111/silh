@@ -4,5 +4,7 @@
 @(goals :Seq[Goal])
 
 @for(goal <- goals){
-    @goal.name
+    <p>@goal._id</p>
+    <p>@goal.name</p>
+    <p>@goal.challengers_num</p>
 }
