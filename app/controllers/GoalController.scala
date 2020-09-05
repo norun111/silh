@@ -6,7 +6,6 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import javax.inject._
-import models.daos.GoalDAO._
 import reactivemongo.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
