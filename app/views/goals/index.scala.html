@@ -1,10 +1,8 @@
 @import org.mongodb.scala.FindObservable
 @import org.mongodb.scala.Document
 
-@(goals :Seq[Document])
+@(goals :Seq[Goal])
 
 @for(goal <- goals){
-    @goal.map { g =>
-      @g._2
-    }
+    @goal.name
 }
