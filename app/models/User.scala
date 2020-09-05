@@ -18,7 +18,7 @@ import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
  * @param activated Indicates that the user has activated its registration.
  */
 case class User(
-    userID: UUID,
+    userID: String = UUID.randomUUID.toString,
     loginInfo: LoginInfo,
     firstName: Option[String],
     lastName: Option[String],
