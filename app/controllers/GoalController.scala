@@ -8,15 +8,17 @@ import play.api.libs.json._
 import javax.inject._
 import models.daos.GoalDAO._
 import reactivemongo.api._
+
 import scala.concurrent.{ ExecutionContext, Future }
 import play.modules.reactivemongo._
-import reactivemongo.api.commands.bson.BSONCountCommandImplicits._
+//import reactivemongo.api.commands.bson.BSONCountCommandImplicits._
 import org.mongodb.scala._
 import org.mongodb.scala.model.Updates._
 import org.mongodb.scala.model.Filters._
-import reactivemongo.bson._
+//import reactivemongo.bson._
 import models.daos.Helpers._
 import org.mongodb.scala.model.Projections
+import reactivemongo.bson.BSONObjectID
 import repositories.GoalRepository
 
 class GoalController @Inject() (
