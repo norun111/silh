@@ -64,7 +64,7 @@ class GoalController @Inject() (
   def deleteGoal(id: BSONObjectID) = Action.async {
     goalRepo.destroy(id).map {
       case Some(goal) => Ok(Json.toJson(goal))
-      case _          => NotFound
+      case _ => NotFound
     }
   }
 
