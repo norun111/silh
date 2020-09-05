@@ -4,8 +4,8 @@ import java.util.UUID
 import reactivemongo.bson.BSONObjectID
 
 case class User_goals(
-                 user_id: UUID,
-                 goal_id: Option[BSONObjectID],
+                 user_id: String = UUID.randomUUID.toString,
+                 goal_id: String = Option[BSONObjectID],
                  learning_time: Int
                )
 
