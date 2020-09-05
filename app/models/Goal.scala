@@ -32,7 +32,6 @@ object Goal {
       case _ => JsError("Expected BSONObjectID as JsString")
     }
   }
-
   implicit val goalFormat: OFormat[Goal] = Json.format[Goal]
 }
 
