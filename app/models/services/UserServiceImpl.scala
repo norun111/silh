@@ -69,7 +69,8 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
           fullName = profile.fullName,
           email = profile.email,
           avatarURL = profile.avatarURL,
-          activated = true
+          activated = true,
+          goal = Nil
         ))
     }
   }
