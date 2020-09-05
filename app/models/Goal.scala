@@ -1,17 +1,16 @@
 package models
 
 import play.api.libs.functional.syntax.unlift
-import play.api.libs.json._
 import reactivemongo.bson.BSONObjectID
-//import reactivemongo.play.json.compat._
 import reactivemongo.play.json.BSONFormats
-//import reactivemongo.bson.BSONObjectID
-//import reactivemongo.bson._
+import reactivemongo.bson._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 import play.modules.reactivemongo.json._, ImplicitBSONHandlers._
 import scala.util.Try
 
 case class Goal(
-  id: String = Option[BSONObjectID],
+  _id: Option[BSONObjectID],
   name: String,
   learning_time: Int,
   challengers_num: Int
@@ -32,6 +31,28 @@ object Goal {
       case _ => JsError("Expected BSONObjectID as JsString")
     }
   }
-  implicit val goalFormat: OFormat[Goal] = Json.format[Goal]
+
+  implicit val locationFormat: OFormat[Goal] = (
+    (JsPath \ "_id" \ "$oid").formatNullable[BSONObjectID] and // Focus
+    (JsPath \ "name").format[String] and
+    (JsPath \ "learning_time").format[Int] and
+    (JsPath \ "challengers_num").format[Int]
+  )(Goal.apply, unlift(Goal.unapply))
+
+  //    implicit val goalReads: Reads[Goal] = (
+  //      (JsPath \ "_id").readNullable[BSONObjectID] and
+  //        (JsPath \ "name").read[String] and
+  //        (JsPath \ "leaning_time").read[Int] and
+  //        (JsPath \ "challengers_num").read[Int] and
+  //    )(Goal.apply _)
+  //
+  //    implicit val goalWrites: Writes[Goal] = (
+  //      (JsPath \ "_id").write[BSONObjectID] and
+  //        (JsPath \ "name").write[String] and
+  //        (JsPath \ "leaning_time").write[Int] and
+  //        (JsPath \ "challengers_num").write[Int] and
+  //    )(unlift(Goal.unapply))
+
+  //  implicit val goalFormat: Format[Goal] = Json.format[Goal]
 }
 
