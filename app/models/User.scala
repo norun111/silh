@@ -2,10 +2,8 @@ package models
 
 import java.util.UUID
 
-import play.api.libs.json._
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 import play.api.libs.functional.syntax.unlift
-import reactivemongo.bson.BSONObjectID
 import play.api.libs.functional.syntax._
 
 /**
