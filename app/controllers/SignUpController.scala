@@ -89,8 +89,8 @@ class SignUpController @Inject() (
               fullName = Some(data.firstName + " " + data.lastName),
               email = Some(data.email),
               avatarURL = None,
-              //              goal = Nil,
-              activated = false
+              activated = false,
+              goal = Nil
             )
             for {
               avatar <- avatarService.retrieveURL(data.email)
