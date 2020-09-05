@@ -32,7 +32,7 @@ class GoalController @Inject() (
 
   def listGoals = Action.async {
     goalRepo.list().map {
-      goals => Ok(Json.toJson(goals))
+      goals => Ok(views.html.goals.index(goals))
     }
   }
 
