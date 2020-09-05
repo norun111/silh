@@ -1,18 +1,20 @@
 package repositories
 
 import java.util.UUID
+
 import javax.inject.Inject
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
-import reactivemongo.play.json._
-
 import scala.concurrent.{ ExecutionContext, Future }
 import models.Goal
 import reactivemongo.bson.BSONObjectID
+import reactivemongo.bson._
 import org.mongodb.scala.ReadPreference
 import reactivemongo.bson.BSONDocument
 import reactivemongo.api._
+//import reactivemongo.api.bson.{ BSONObjectID }
 import reactivemongo.api.commands.WriteResult
+import reactivemongo.play.json._
 
 class GoalRepository @Inject() (
     implicit
