@@ -1,23 +1,27 @@
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import models._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import javax.inject._
+
 import scala.concurrent.{ ExecutionContext, Future }
 import reactivemongo.bson.BSONObjectID
 import repositories.GoalRepository
+import utils.auth.DefaultEnv
 
 class GoalController @Inject() (
     ec: ExecutionContext,
+    silhouette: Silhouette[DefaultEnv],
     goalRepo: GoalRepository
 ) extends Controller {
 
-  def listGoals = Action.async {
+  def listGoals = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
     goalRepo.list().map {
-      goals => Ok(views.html.goals.index(goals))
+      goals => Ok(views.html.goals.index(goals, request.identity))
     }
   }
 
