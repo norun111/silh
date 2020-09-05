@@ -52,6 +52,9 @@ class GoalRepository @Inject() (
       true
     ).map(_.result[Goal]))
 
+  // Add challengers_num when user chooses goal
+  val addChallengerNum = (num: Int) => num + 1
+
   def destroy(id: BSONObjectID): Future[Option[Goal]] =
     collection.flatMap(_.findAndRemove(BSONDocument("_id" ->
       id)).map(_.result[Goal]))
