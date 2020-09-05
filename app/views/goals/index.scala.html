@@ -1,10 +1,14 @@
 @import org.mongodb.scala.FindObservable
 @import org.mongodb.scala.Document
 
-@(goals :Seq[Goal])
+@(goals :Seq[Goal], user: models.User)
+    @for(goal <- goals){
 
-@for(goal <- goals){
-    <p>@goal._id</p>
-    <p>@goal.name</p>
-    <p>@goal.challengers_num</p>
-}
+        <p>@goal._id</p>
+        <p>@goal.name</p>
+        <p>@goal.challengers_num</p>
+    }
+<div class="row">
+    <p class="col-md-6"><strong>user</strong></p><p class="col-md-6">@user.firstName.getOrElse("None")</p>
+</div>
+
