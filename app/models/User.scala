@@ -1,8 +1,10 @@
 package models
 
 import java.util.UUID
-import play.api.libs.json._
+
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
+import play.api.libs.functional.syntax.unlift
+import play.api.libs.functional.syntax._
 
 /**
  * The user object.
@@ -13,6 +15,7 @@ import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
  * @param lastName Maybe the last name of the authenticated user.
  * @param fullName Maybe the full name of the authenticated user.
  * @param email Maybe the email of the authenticated provider.
+ * @param goal List of goals the user has.
  * @param avatarURL Maybe the avatar URL of the authenticated provider.
  * @param activated Indicates that the user has activated its registration.
  */
@@ -24,7 +27,8 @@ case class User(
     fullName: Option[String],
     email: Option[String],
     avatarURL: Option[String],
-    activated: Boolean
+    activated: Boolean,
+    goal: List[Goal]
 ) extends Identity {
 
   /**
@@ -43,5 +47,27 @@ case class User(
 }
 
 object User {
-  implicit val jsonFormat = Json.format[User]
+  import play.api.libs.json._
+  implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]] {
+    override def reads(json: JsValue): JsResult[Option[T]] = json.validateOpt[T]
+
+    override def writes(o: Option[T]): JsValue = o match {
+      case Some(t) ⇒ implicitly[Writes[T]].writes(t)
+      case None ⇒ JsNull
+    }
+  }
+
+  implicit val userFormat: OFormat[User] = (
+    (JsPath \ "userId").format[UUID] and
+    (JsPath \ "loginInfo").format[LoginInfo] and
+    (JsPath \ "firstName").format[Option[String]] and
+    (JsPath \ "lastName").format[Option[String]] and
+    (JsPath \ "fullName").format[Option[String]] and
+    (JsPath \ "email").format[Option[String]] and
+    (JsPath \ "avatarURL").format[Option[String]] and
+    (JsPath \ "activated").format[Boolean] and
+    (JsPath \ "goal").format[List[Goal]]
+  )(User.apply, unlift(User.unapply))
+
+  //  implicit val jsonFormat = Json.format[User]
 }
