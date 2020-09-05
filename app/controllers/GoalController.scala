@@ -11,7 +11,6 @@ import reactivemongo.bson.BSONObjectID
 import repositories.GoalRepository
 import utils.auth.DefaultEnv
 
-
 class GoalController @Inject() (
     ec: ExecutionContext,
     silhouette: Silhouette[DefaultEnv],
@@ -21,7 +20,8 @@ class GoalController @Inject() (
   def listGoals = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
     goalRepo.list().map {
-      goals => Ok(views.html.goals.index(goals, request.identity))
+      goals =>
+        Ok(views.html.goals.index(goals, request.identity))
     }
   }
 
