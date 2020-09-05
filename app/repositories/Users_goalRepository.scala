@@ -5,10 +5,10 @@ import play.modules.reactivemongo.ReactiveMongoApi
 
 import scala.concurrent.ExecutionContext
 
-class Users_goalRepository  @Inject() (
-                                 implicit
-                                 ec: ExecutionContext,
-                                 reactiveMongoApi: ReactiveMongoApi
-                               ) {
+class Users_goalRepository @Inject() (
+    implicit
+    ec: ExecutionContext,
+    reactiveMongoApi: ReactiveMongoApi
+) {
 
 }
