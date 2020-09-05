@@ -89,7 +89,7 @@ class SignUpController @Inject() (
               fullName = Some(data.firstName + " " + data.lastName),
               email = Some(data.email),
               avatarURL = None,
-              goal = Nil,
+              //              goal = Nil,
               activated = false
             )
             for {
