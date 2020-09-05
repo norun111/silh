@@ -1,4 +1,5 @@
 import com.typesafe.sbt.SbtScalariform._
+import play.sbt.routes.RoutesKeys
 import scalariform.formatter.preferences._
 
 name := """silhouette"""
@@ -16,11 +17,13 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += Resolver.jcenterRepo
 // Resolver is needed only for SNAPSHOT versions
 resolvers += "typesafe" at "http://repo.typesafe.com/typesafe/releases/"
+resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 libraryDependencies ++= Seq(
 //  "org.reactivemongo" %% "reactivemongo-play-json" % "0.20.11-play25",
 //  "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
 //  "org.reactivemongo" %% "reactivemongo" % "0.11.14",
+  "com.typesafe.play" %% "play-json" % "2.5.19",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
   "com.mohiva" %% "play-silhouette" % "4.0.0",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
@@ -44,3 +47,5 @@ fork in run := false
 
 libraryDependencies += "javax.xml.bind" % "jaxb-api" % "2.2.12"
 routesGenerator := InjectedRoutesGenerator
+
+RoutesKeys.routesImport += "play.modules.reactivemongo.PathBindables._"
