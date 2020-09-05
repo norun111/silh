@@ -15,6 +15,7 @@ class GoalController @Inject() (
 ) extends Controller {
 
   def listGoals = Action.async {
+    // sort by descending "challengers_num"
     goalRepo.list().map {
       goals => Ok(views.html.goals.index(goals))
     }
