@@ -20,22 +20,15 @@ import play.modules.reactivemongo.json.collection.JSONCollection
 import scala.concurrent.ExecutionContext
 
 class Users_goalController @Inject() (
-                                 ec: ExecutionContext,
-                                 users_goalRepo: Users_goalRepository
-                               ) extends Controller {
-  val users_goalForm = Form[User_goals](
-    mapping(
-      "user_id" -> nonEmptyText,
-      "goal_id" -> nonEmptyText,
-      "learning_time" -> number
-    )(User_goals.apply)(User_goals.unapply)
-  )
+    ec: ExecutionContext,
+    users_goalRepo: Users_goalRepository
+) extends Controller {
 
-  def createGoal = Action.async(parse.json) {
-    _.body.validate[Goal].map { goal =>
-      goalRepo.create(goal).map { _ =>
-        Created
-      }
-    }.getOrElse(Future.successful(BadRequest("Invalid format")))
-  }
+  //  def createGoal = Action.async(parse.json) {
+  //    _.body.validate[Goal].map { goal =>
+  //      goalRepo.create(goal).map { _ =>
+  //        Created
+  //      }
+  //    }.getOrElse(Future.successful(BadRequest("Invalid format")))
+  //  }
 }
