@@ -6,11 +6,11 @@ import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import javax.inject._
-
 import scala.concurrent.{ ExecutionContext, Future }
 import reactivemongo.bson.BSONObjectID
 import repositories.GoalRepository
 import utils.auth.DefaultEnv
+
 
 class GoalController @Inject() (
     ec: ExecutionContext,
