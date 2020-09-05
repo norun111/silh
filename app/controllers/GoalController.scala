@@ -44,10 +44,10 @@ class GoalController @Inject() (
     }.getOrElse(Future.successful(BadRequest("Invalid format")))
   }
 
-  def readGoal(id: BSONObjectID) = Action.async {
-    goalRepo.read(id).map {
-      maybeGoal.map {
-        goal => Ok(Json.toJson(goal))
+  def readGoal(id: BSONObjectID) = Action.async { req =>
+    goalRepo.read(id).map { maybeGoal =>
+      maybeGoal.map { goal =>
+        Ok(Json.toJson(goal))
       }.getOrElse(NotFound)
     }
   }
