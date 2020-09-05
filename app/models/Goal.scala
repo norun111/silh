@@ -2,9 +2,6 @@ package models
 
 import play.api.libs.functional.syntax.unlift
 import reactivemongo.bson.BSONObjectID
-import reactivemongo.play.json.BSONFormats
-import reactivemongo.bson._
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.modules.reactivemongo.json._, ImplicitBSONHandlers._
 import scala.util.Try
