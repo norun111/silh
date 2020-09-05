@@ -15,6 +15,7 @@ import reactivemongo.api._
 //import reactivemongo.api.bson.{ BSONObjectID }
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.play.json._
+import play.api.libs.json._
 
 class GoalRepository @Inject() (
     implicit
@@ -33,6 +34,14 @@ class GoalRepository @Inject() (
 
   def read(id: BSONObjectID): Future[Option[Goal]] =
     collection.flatMap(_.find(BSONDocument("_id" -> id)).one[Goal])
+
+  def goalSort: Future[Seq[Goal]] =
+  collection.flatMap(_.find(Json.obj())
+    // sort by lastName
+    .sort(Json.obj("challengers_num" -> -1))
+    .cursor[Goal]()
+    // Collect the results as a list
+    .collect[Seq](Int.MaxValue, Cursor.FailOnError[Seq[Goal]]()))
 
   def update(id: BSONObjectID, goal: Goal): Future[Option[Goal]] =
     collection.flatMap(_.findAndUpdate(
