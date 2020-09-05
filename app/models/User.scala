@@ -13,7 +13,7 @@ import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
  * @param lastName Maybe the last name of the authenticated user.
  * @param fullName Maybe the full name of the authenticated user.
  * @param email Maybe the email of the authenticated provider.
- * @param goal List of goals the user has.
+ * // * @param goal List of goals the user has.
  * @param avatarURL Maybe the avatar URL of the authenticated provider.
  * @param activated Indicates that the user has activated its registration.
  */
@@ -24,7 +24,6 @@ case class User(
     lastName: Option[String],
     fullName: Option[String],
     email: Option[String],
-    goal: List[Goal] = List(),
     avatarURL: Option[String],
     activated: Boolean
 ) extends Identity {
