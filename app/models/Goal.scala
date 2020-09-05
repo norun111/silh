@@ -11,7 +11,7 @@ import play.modules.reactivemongo.json._, ImplicitBSONHandlers._
 import scala.util.Try
 
 case class Goal(
-  id: Option[BSONObjectID],
+  id: String = Option[BSONObjectID],
   name: String,
   learning_time: Int,
   challengers_num: Int
