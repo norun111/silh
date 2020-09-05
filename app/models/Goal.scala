@@ -32,7 +32,7 @@ object Goal {
     }
   }
 
-  implicit val locationFormat: OFormat[Goal] = (
+  implicit val goalFormat: OFormat[Goal] = (
     (JsPath \ "_id" \ "$oid").formatNullable[BSONObjectID] and // Focus
     (JsPath \ "name").format[String] and
     (JsPath \ "learning_time").format[Int] and
