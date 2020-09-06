@@ -2,13 +2,15 @@
 @import org.mongodb.scala.Document
 
 @(goals :Seq[Goal], user: models.User)
+    <div></div>
     @for(goal <- goals){
-
-        <p>@goal._id</p>
-        <p>@goal.name</p>
-        <p>@goal.challengers_num</p>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input your-checkbox" id="customCheck1">
+            <label class="custom-control-label" for="customCheck1">@goal.name</label>
+        </div>
     }
-<div class="row">
-    <p class="col-md-6"><strong>user</strong></p><p class="col-md-6">@user.firstName.getOrElse("None")</p>
-</div>
 
+
+<script>
+        $('.your-checkbox').prop('indeterminate', true)
+</script>
