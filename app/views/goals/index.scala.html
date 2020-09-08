@@ -1,16 +1,19 @@
 @import org.mongodb.scala.FindObservable
 @import org.mongodb.scala.Document
+@import b3.vertical.fieldConstructor
 
-@(goals :Seq[Goal], user: models.User)
-    <div></div>
-    @for(goal <- goals){
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input your-checkbox" id="customCheck1">
-            <label class="custom-control-label" for="customCheck1">@goal.name</label>
-        </div>
-    }
+@*
+@(goals :Seq[Goal], user: models.User)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
+@for(goal <- goals){
+    <div class="custom-control custom-radio">
+        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
+        <label class="custom-control-label" for="customRadio1">@goal.name</label>
+    </div>
+}
+@b3.buttonType("submit", 'class -> "btn btn-default"){ <span class="glyphicon glyphicon-ok"></span> Submit }
 
 <script>
         $('.your-checkbox').prop('indeterminate', true)
 </script>
+*@
