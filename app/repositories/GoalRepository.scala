@@ -5,11 +5,13 @@ import java.util.UUID
 import javax.inject.Inject
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
+
 import scala.concurrent.{ ExecutionContext, Future }
 import models.Goal
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.bson._
 import org.mongodb.scala.ReadPreference
+import play.api.mvc.Action
 import reactivemongo.api._
 //import reactivemongo.api.bson.{ BSONObjectID }
 import reactivemongo.api.commands.WriteResult
@@ -36,10 +38,10 @@ class GoalRepository @Inject() (
   def create(goal: Goal): Future[WriteResult] =
     collection.flatMap((_.insert(goal)))
 
-  def read(id: BSONObjectID): Future[Option[Goal]] =
+  def read(id: String): Future[Option[Goal]] =
     collection.flatMap(_.find(BSONDocument("_id" -> id)).one[Goal])
 
-  def update(id: BSONObjectID, goal: Goal): Future[Option[Goal]] =
+  def update(id: String, goal: Goal): Future[Option[Goal]] =
     collection.flatMap(_.findAndUpdate(
       BSONDocument("_id" -> id),
       BSONDocument(
@@ -55,7 +57,7 @@ class GoalRepository @Inject() (
   // Add challengers_num when user chooses goal
   val addChallengerNum = (num: Int) => num + 1
 
-  def destroy(id: BSONObjectID): Future[Option[Goal]] =
+  def destroy(id: String): Future[Option[Goal]] =
     collection.flatMap(_.findAndRemove(BSONDocument("_id" ->
       id)).map(_.result[Goal]))
 }
