@@ -61,6 +61,7 @@ class GoalController @Inject() (
 
   def listGoals = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
+    // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     goalRepo.list().map {
       goals =>
         Ok(views.html.goals.index())
