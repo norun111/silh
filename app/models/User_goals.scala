@@ -7,8 +7,8 @@ import reactivemongo.bson.BSONObjectID
 import scala.util.Try
 
 case class User_goals(
-  user_id: String = UUID.randomUUID.toString,
-  goal_id: Option[BSONObjectID],
+  user_id: String,
+  goal_id: BSONObjectID,
   learning_time: Int
 )
 
