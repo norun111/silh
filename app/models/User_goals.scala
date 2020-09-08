@@ -8,8 +8,7 @@ import scala.util.Try
 
 case class User_goals(
   user_id: String,
-  goal_id: BSONObjectID,
-  learning_time: Int
+  goal_id: String
 )
 
 object User_goals {
