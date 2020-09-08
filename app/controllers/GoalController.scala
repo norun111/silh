@@ -58,16 +58,16 @@ class GoalController @Inject() (
   //        )(Goal.apply)(Goal.unapply))
   //      )(User.apply)(User.unapply)
   //    )
-  def confirm = Action.async {
-    Future(Ok(views.goals.))
+  def confirm = silhouette.SecuredAction.async { implicit request =>
+    Future(Ok(views.html.goals.confirm(request.identity.userID)))
   }
 
-  def listGoals(userId: String) = Action.async { implicit request =>
+  def listGoals(userID: String) = Action.async { implicit request =>
     // sort by descending "challengers_num"
     // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     goalRepo.list().map {
       goals =>
-        Ok(views.html.goals.index(goals, userId))
+        Ok(views.html.goals.index(goals, userID))
     }
   }
 
