@@ -2,8 +2,7 @@
 @import org.mongodb.scala.Document
 @import b3.vertical.fieldConstructor
 
-@*
-@(goals :Seq[Goal], user: models.User)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+@(goals :Seq[Goal], userID: String)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
 @for(goal <- goals){
     <div class="custom-control custom-radio">
@@ -16,4 +15,3 @@
 <script>
         $('.your-checkbox').prop('indeterminate', true)
 </script>
-*@
