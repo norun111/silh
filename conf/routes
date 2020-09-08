@@ -25,7 +25,8 @@ GET         /account/email/:email            controllers.ActivateAccountControll
 GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: String)
 
 # Goal
-GET         /goals                           controllers.GoalController.listGoals
+GET         /confirm                         controllers.GoalController.confirm
+GET         /goals/:userId                   controllers.GoalController.listGoals(userId: String)
 POST        /goals/create                    controllers.GoalController.createGoal
 GET         /goals/:_id                      controllers.GoalController.readGoal(_id: reactivemongo.bson.BSONObjectID)
 PUT         /goals/:_id/update               controllers.GoalController.updateGoal(_id: reactivemongo.bson.BSONObjectID)
