@@ -1,16 +1,23 @@
+
+
+@(goals :Seq[Goal], userID: String, user_goalForm: Form[User_goals])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+
+@import helper._
 @import org.mongodb.scala.FindObservable
 @import org.mongodb.scala.Document
 @import b3.vertical.fieldConstructor
 
-@(goals :Seq[Goal], userID: String)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
-
-@for(goal <- goals){
-    <div class="custom-control custom-radio">
-        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
-        <label class="custom-control-label" for="customRadio1">@goal.name</label>
-    </div>
+@form(action = helper.CSRF(routes.GoalController.saveUserGoal())) {
+    @for(goal <- goals){
+        <div class="custom-control custom-radio">
+            <input id="goal_id" name="goal_id" type="radio" value="@goal._id">
+            @goal.name
+        </div>
+    }
+    <input id="user_id" name="user_id" type="hidden" value="@userID">
+    <input type="submit" class="btn btn-default" value="submit">
 }
-@b3.buttonType("submit", 'class -> "btn btn-default"){ <span class="glyphicon glyphicon-ok"></span> Submit }
+
 
 <script>
         $('.your-checkbox').prop('indeterminate', true)
