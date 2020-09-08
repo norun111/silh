@@ -40,31 +40,34 @@ class GoalController @Inject() (
     )(User_goals.apply)(User_goals.unapply)
   )
 
-//    val userForm = Form(
-//      mapping(
-//        "userID" -> text,
-//        "loginInfo" -> ignored(LoginInfo),
-//        "firstName" -> optional(text),
-//        "lastName" -> optional(text),
-//        "fullName" -> optional(text),
-//        "email" -> optional(text),
-//        "avatarURL" -> optional(text),
-//        "activated" -> boolean,
-//        "goal" -> list(mapping(
-//          "_id" -> ignored(BSONObjectID.generate: BSONObjectID),
-//          "name" -> text,
-//          "learning_time" -> number,
-//          "challengers_num" -> number
-//        )(Goal.apply)(Goal.unapply))
-//      )(User.apply)(User.unapply)
-//    )
+  //    val userForm = Form(
+  //      mapping(
+  //        "userID" -> text,
+  //        "loginInfo" -> ignored(LoginInfo),
+  //        "firstName" -> optional(text),
+  //        "lastName" -> optional(text),
+  //        "fullName" -> optional(text),
+  //        "email" -> optional(text),
+  //        "avatarURL" -> optional(text),
+  //        "activated" -> boolean,
+  //        "goal" -> list(mapping(
+  //          "_id" -> ignored(BSONObjectID.generate: BSONObjectID),
+  //          "name" -> text,
+  //          "learning_time" -> number,
+  //          "challengers_num" -> number
+  //        )(Goal.apply)(Goal.unapply))
+  //      )(User.apply)(User.unapply)
+  //    )
+  def confirm = Action.async {
+    Future(Ok(views.goals.))
+  }
 
-  def listGoals = silhouette.SecuredAction.async { implicit request =>
+  def listGoals(userId: String) = Action.async { implicit request =>
     // sort by descending "challengers_num"
     // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     goalRepo.list().map {
       goals =>
-        Ok(views.html.goals.index())
+        Ok(views.html.goals.index(goals, userId))
     }
   }
 
