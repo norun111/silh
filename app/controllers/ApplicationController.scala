@@ -42,8 +42,7 @@ class ApplicationController @Inject() (
     if (request.identity.goal.nonEmpty) {
       Future.successful(Ok(views.html.home(request.identity)))
     } else {
-      Future.successful(Ok(views.html.goals.index()))
-      //      controllers.routes.GoalController.listGoals(request.identity.userID)
+      Future.successful(Ok(views.html.goals.confirm(request.identity.userID)))
     }
   }
 
