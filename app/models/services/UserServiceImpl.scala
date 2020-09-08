@@ -24,7 +24,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @param id The ID to retrieve a user.
    * @return The retrieved user or None if no user could be retrieved for the given ID.
    */
-  def retrieve(id: UUID) = userDAO.find(id)
+  def retrieve(id: String) = userDAO.find(id)
 
   /**
    * Retrieves a user that matches the specified login info.
@@ -62,7 +62,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
         ))
       case None => // Insert a new user
         userDAO.save(User(
-          userID = UUID.randomUUID(),
+          userID = UUID.randomUUID.toString,
           loginInfo = profile.loginInfo,
           firstName = profile.firstName,
           lastName = profile.lastName,
