@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
  * @param activated Indicates that the user has activated its registration.
  */
 case class User(
-    userID: UUID,
+    userID: String = UUID.randomUUID.toString,
     loginInfo: LoginInfo,
     firstName: Option[String],
     lastName: Option[String],
@@ -58,7 +58,7 @@ object User {
   }
 
   implicit val userFormat: OFormat[User] = (
-    (JsPath \ "userId").format[UUID] and
+    (JsPath \ "userId").format[String] and
     (JsPath \ "loginInfo").format[LoginInfo] and
     (JsPath \ "firstName").format[Option[String]] and
     (JsPath \ "lastName").format[Option[String]] and
