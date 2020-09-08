@@ -7,7 +7,7 @@ import play.modules.reactivemongo.json._, ImplicitBSONHandlers._
 import scala.util.Try
 
 case class Goal(
-  _id: BSONObjectID,
+  _id: String = BSONObjectID.generate.toString(),
   name: String,
   learning_time: Int,
   challengers_num: Int
@@ -29,8 +29,15 @@ object Goal {
     }
   }
 
+  //  implicit val goalFormat: OFormat[Goal] = (
+  //    (JsPath \ "_id" \ "$oid").format[BSONObjectID] and // Focus
+  //    (JsPath \ "name").format[String] and
+  //    (JsPath \ "learning_time").format[Int] and
+  //    (JsPath \ "challengers_num").format[Int]
+  //  )(Goal.apply, unlift(Goal.unapply))
+
   implicit val goalFormat: OFormat[Goal] = (
-    (JsPath \ "_id" \ "$oid").format[BSONObjectID] and // Focus
+    (JsPath \ "_id" \ "$oid").format[String] and // Focus
     (JsPath \ "name").format[String] and
     (JsPath \ "learning_time").format[Int] and
     (JsPath \ "challengers_num").format[Int]
