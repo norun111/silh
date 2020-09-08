@@ -3,7 +3,7 @@ package controllers
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.Silhouette
-import models._
+import models.{ Goal, _ }
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
@@ -32,11 +32,13 @@ class GoalController @Inject() (
     implicit val webJarAssets: WebJarAssets
 ) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
 
+  private def collection: Future[JSONCollection] =
+    reactiveMongoApi.database.map(_.collection("users_goal"))
+
   val user_goalForm = Form(
     mapping(
       "user_id" -> text,
-      "goal_id" -> ignored(BSONObjectID.generate: BSONObjectID),
-      "learning_time" -> number
+      "goal_id" -> text
     )(User_goals.apply)(User_goals.unapply)
   )
 
@@ -67,7 +69,7 @@ class GoalController @Inject() (
     // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     goalRepo.list().map {
       goals =>
-        Ok(views.html.goals.index(goals, userID))
+        Ok(views.html.goals.index(goals, userID, user_goalForm))
     }
   }
 
@@ -79,7 +81,20 @@ class GoalController @Inject() (
     }.getOrElse(Future.successful(BadRequest("Invalid format")))
   }
 
-  def readGoal(id: BSONObjectID) = Action.async { req =>
+  val testGoal: Seq[Goal] = Seq(Goal(_id = "test", name = "test", learning_time = 1000, challengers_num = 0))
+
+  def saveUserGoal = Action {
+    implicit request =>
+      user_goalForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.goals.index(testGoal, "test", formWithErrors)),
+        userGoal => {
+          collection.flatMap((_.insert(userGoal)))
+          Ok(views.html.goals.test()) // Test
+        }
+      )
+  }
+
+  def readGoal(id: String) = Action.async { req =>
     goalRepo.read(id).map { maybeGoal =>
       maybeGoal.map { goal =>
         Ok(Json.toJson(goal))
@@ -87,7 +102,7 @@ class GoalController @Inject() (
     }
   }
 
-  def updateGoal(id: BSONObjectID) = Action.async(parse.json) { req =>
+  def updateGoal(id: String) = Action.async(parse.json) { req =>
     req.body.validate[Goal].map { goal =>
       goalRepo.update(id, goal).map {
         case Some(goal) => Ok(Json.toJson(goal))
@@ -106,7 +121,7 @@ class GoalController @Inject() (
   //        })
   //  }
 
-  def deleteGoal(id: BSONObjectID) = Action.async {
+  def deleteGoal(id: String) = Action.async {
     goalRepo.destroy(id).map {
       case Some(goal) => Ok(Json.toJson(goal))
       case _ => NotFound
