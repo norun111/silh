@@ -9,3 +9,4 @@ target
 database
 conf/env.conf
 /.g8
+public
