@@ -3,11 +3,16 @@ package models
 import play.api.libs.functional.syntax.unlift
 import reactivemongo.bson.BSONObjectID
 import play.api.libs.functional.syntax._
-import play.modules.reactivemongo.json._, ImplicitBSONHandlers._
+import play.modules.reactivemongo.json._
+import ImplicitBSONHandlers._
+
 import scala.util.Try
+import java.util.UUID
+
+import com.novus.salat.Context
 
 case class Goal(
-  _id: String = BSONObjectID.generate.toString(),
+  goalID: String,
   name: String,
   learning_time: Int,
   challengers_num: Int
@@ -29,19 +34,19 @@ object Goal {
     }
   }
 
+  //      implicit val goalFormat: OFormat[Goal] = (
+  //        (JsPath \ "_id" \ "$oid").format[BSONObjectID] and // Focus
+  //        (JsPath \ "name").format[String] and
+  //        (JsPath \ "learning_time").format[Int] and
+  //        (JsPath \ "challengers_num").format[Int]
+  //      )(Goal.apply, unlift(Goal.unapply))
+
   //  implicit val goalFormat: OFormat[Goal] = (
-  //    (JsPath \ "_id" \ "$oid").format[BSONObjectID] and // Focus
+  //    (JsPath \ "goalID").format[String] and
   //    (JsPath \ "name").format[String] and
   //    (JsPath \ "learning_time").format[Int] and
   //    (JsPath \ "challengers_num").format[Int]
   //  )(Goal.apply, unlift(Goal.unapply))
-
-  implicit val goalFormat: OFormat[Goal] = (
-    (JsPath \ "_id" \ "$oid").format[String] and // Focus
-    (JsPath \ "name").format[String] and
-    (JsPath \ "learning_time").format[Int] and
-    (JsPath \ "challengers_num").format[Int]
-  )(Goal.apply, unlift(Goal.unapply))
 
   //    implicit val goalReads: Reads[Goal] = (
   //      (JsPath \ "_id").readNullable[BSONObjectID] and
@@ -57,6 +62,6 @@ object Goal {
   //        (JsPath \ "challengers_num").write[Int] and
   //    )(unlift(Goal.unapply))
 
-  //  implicit val goalFormat: Format[Goal] = Json.format[Goal]
+  implicit val goalFormat: OFormat[Goal] = Json.format[Goal]
 }
 
