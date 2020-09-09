@@ -3,9 +3,15 @@ package models
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
+import com.mongodb.DBObject
 import play.api.libs.functional.syntax.unlift
 import play.api.libs.functional.syntax._
-
+import models.daos.ModelMapper
+import com.novus.salat.annotations._
+import com.novus.salat.dao._
+import com.mongodb.casbah.Imports._
+import se.radley.plugin.salat._
+import scala.concurrent._
 /**
  * The user object.
  *
@@ -28,7 +34,7 @@ case class User(
     email: Option[String],
     avatarURL: Option[String],
     activated: Boolean,
-    goal: List[Goal]
+    goal: Option[Goal]
 ) extends Identity {
 
   /**
@@ -66,8 +72,35 @@ object User {
     (JsPath \ "email").format[Option[String]] and
     (JsPath \ "avatarURL").format[Option[String]] and
     (JsPath \ "activated").format[Boolean] and
-    (JsPath \ "goal").format[List[Goal]]
+    (JsPath \ "goal").format[Option[Goal]]
   )(User.apply, unlift(User.unapply))
 
   //  implicit val jsonFormat = Json.format[User]
+
+  //  def toDBObject(user: User): DBObject = {
+  //    DBObject(
+  //      "userID" -> user.userID,
+  //      "loginInfo" -> user.loginInfo,
+  //      "firstName" -> user.firstName,
+  //      "lastName" -> user.lastName,
+  //      "fullName" -> user.fullName,
+  //      "email" -> user.email,
+  //      "avatarURL" -> user.avatarURL,
+  //      "activated" -> user.activated,
+  //      "goal" -> user.goal
+  //    )
+  //  }
+  //  def toModel(obj: DBObject): Option[User] = {
+  //    for {
+  //      userID   <- obj.as[String]("userID")
+  //      loginInfo  <- obj.as[LoginInfo]("loginInfo")
+  //      firstName <- obj.as[String]("firstName")
+  //      lastName <- obj.as[String]("lastName")
+  //      fullName <- obj.as[String]("fullName")
+  //      email <- obj.as[String]("email")
+  //      avatarURL <- obj.as[String]("avatarURL")
+  //      activated <- obj.as[Boolean]("activated")
+  //      goal <- obj.as[Goal]("goal")
+  //    } yield User(userID, loginInfo, firstName, lastName, fullName, email, avatarURL, activated, goal)
+  //  }
 }
