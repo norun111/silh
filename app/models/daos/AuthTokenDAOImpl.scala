@@ -26,7 +26,7 @@ class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extend
    * @param id The unique token ID.
    * @return The found token or None if no token for the given ID could be found.
    */
-  def find(id: UUID): Future[Option[AuthToken]] = {
+  def find(id: String): Future[Option[AuthToken]] = {
     val query = Json.obj("id" -> id)
     collection.flatMap(_.find(query).one[AuthToken])
   }
@@ -61,7 +61,7 @@ class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extend
    * @param id The ID for which the token should be removed.
    * @return A future to wait for the process to be completed.
    */
-  def remove(id: UUID): Future[Unit] = {
+  def remove(id: String): Future[Unit] = {
     val query = Json.obj("id" -> id)
     collection.flatMap(_.remove(query))
     Future.successful(())

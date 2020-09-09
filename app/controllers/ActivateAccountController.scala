@@ -71,7 +71,7 @@ class ActivateAccountController @Inject() (
    * @param token The token to identify a user.
    * @return The result to display.
    */
-  def activate(token: UUID) = silhouette.UnsecuredAction.async { implicit request =>
+  def activate(token: String) = silhouette.UnsecuredAction.async { implicit request =>
     authTokenService.validate(token).flatMap {
       case Some(authToken) => userService.retrieve(authToken.userID).flatMap {
         case Some(user) if user.loginInfo.providerID == CredentialsProvider.ID =>

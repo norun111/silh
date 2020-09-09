@@ -1,14 +1,15 @@
 package controllers
 
 import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import models.Goal
 import play.api.i18n.{ I18nSupport, MessagesApi }
 import play.api.mvc.Controller
+import repositories.GoalRepository
 import utils.auth.DefaultEnv
 
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 /**
  * The basic application controller.
@@ -20,19 +21,28 @@ import scala.concurrent.Future
  */
 class ApplicationController @Inject() (
   val messagesApi: MessagesApi,
+  goalRepo: GoalRepository,
+  implicit val ec: ExecutionContext,
   silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry,
   implicit val webJarAssets: WebJarAssets
 )
     extends Controller with I18nSupport {
-
   /**
    * Handles the index action.
    *
    * @return The result to display.
+   *
+   *         redirect goal_list
+   *         if goal.length > 0 redirect user_show
+   *         else views.html.goals.index(goals, request.identity) processing register goal
    */
   def index = silhouette.SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.home(request.identity)))
+    if (request.identity.goal.nonEmpty) {
+      Future.successful(Ok(views.html.home(request.identity)))
+    } else {
+      Future.successful(Ok(views.html.goals.confirm(request.identity.userID)))
+    }
   }
 
   /**

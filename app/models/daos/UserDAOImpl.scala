@@ -39,7 +39,7 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
    * @param userID The ID of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def find(userID: UUID): Future[Option[User]] = {
+  def find(userID: String): Future[Option[User]] = {
     val query = Json.obj("userID" -> userID)
     collection.flatMap(_.find(query).one[User])
   }
