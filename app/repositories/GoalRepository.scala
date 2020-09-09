@@ -5,15 +5,15 @@ import java.util.UUID
 import javax.inject.Inject
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
-
 import scala.concurrent.{ ExecutionContext, Future }
 import models.Goal
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.bson._
+//import com.mongodb.casbah.Imports._
 import org.mongodb.scala.ReadPreference
 import play.api.mvc.Action
+import models.User_goals
 import reactivemongo.api._
-//import reactivemongo.api.bson.{ BSONObjectID }
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.play.json._
 import play.api.libs.json._
@@ -38,12 +38,12 @@ class GoalRepository @Inject() (
   def create(goal: Goal): Future[WriteResult] =
     collection.flatMap((_.insert(goal)))
 
-  def read(id: String): Future[Option[Goal]] =
-    collection.flatMap(_.find(BSONDocument("_id" -> id)).one[Goal])
+  def find(id: String): Future[Option[Goal]] =
+    collection.flatMap(_.find(BSONDocument("goalID" -> id)).one[Goal])
 
   def update(id: String, goal: Goal): Future[Option[Goal]] =
     collection.flatMap(_.findAndUpdate(
-      BSONDocument("_id" -> id),
+      BSONDocument("goalID" -> id),
       BSONDocument(
         f"$$set" -> BSONDocument(
           "name" -> goal.name,
@@ -58,6 +58,12 @@ class GoalRepository @Inject() (
   val addChallengerNum = (num: Int) => num + 1
 
   def destroy(id: String): Future[Option[Goal]] =
-    collection.flatMap(_.findAndRemove(BSONDocument("_id" ->
+    collection.flatMap(_.findAndRemove(BSONDocument("goalID" ->
       id)).map(_.result[Goal]))
+
+  def findOlder1(id: String, collection: BSONCollection): Future[Option[BSONDocument]] = {
+    val query = BSONDocument("goalID" -> id)
+    // MongoDB .findOne
+    collection.find(query).one[BSONDocument]
+  }
 }
