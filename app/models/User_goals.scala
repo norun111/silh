@@ -3,12 +3,16 @@ package models
 import java.util.UUID
 
 import reactivemongo.bson.BSONObjectID
+import play.api.libs.functional.syntax.unlift
+import play.api.libs.functional.syntax._
 
 import scala.util.Try
 
 case class User_goals(
+  usersGoalID: String = UUID.randomUUID.toString,
   user_id: String,
-  goal_id: String
+  goal_id: String,
+  learning_time: Double
 )
 
 object User_goals {
@@ -26,5 +30,12 @@ object User_goals {
     }
   }
 
-  implicit val goalFormat: OFormat[User_goals] = Json.format[User_goals]
+  implicit val goalFormat: OFormat[User_goals] = (
+    (JsPath \ "usersGoalID").format[String] and
+    (JsPath \ "user_id").format[String] and
+    (JsPath \ "goal_id").format[String] and
+    (JsPath \ "learning_time").format[Double]
+  )(User_goals.apply, unlift(User_goals.unapply))
+
+  //  implicit val goalFormat: OFormat[User_goals] = Json.format[User_goals]
 }
