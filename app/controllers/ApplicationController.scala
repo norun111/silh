@@ -4,7 +4,6 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models.Goal
-import controllers.GoalController
 import play.api.i18n.{ I18nSupport, MessagesApi }
 import play.api.mvc.Controller
 import repositories.GoalRepository
