@@ -1,13 +1,18 @@
 import com.typesafe.sbt.SbtScalariform._
 import play.sbt.routes.RoutesKeys
 import scalariform.formatter.preferences._
+import play.twirl.sbt.Import.TwirlKeys
 
 name := """silhouette"""
 organization := "silhouette"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+// Salat Settings
+lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
+  routesImport += "se.radley.plugin.salat.Binders._",
+  TwirlKeys.templateImports += "org.bson.types.ObjectId"
+)
 
 version := "4.0.0"
 
@@ -23,6 +28,13 @@ libraryDependencies ++= Seq(
 //  "org.reactivemongo" %% "reactivemongo-play-json" % "0.20.11-play25",
 //  "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
 //  "org.reactivemongo" %% "reactivemongo" % "0.11.14",
+//  "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0",
+  "net.cloudinsights" %% "play-plugins-salat" % "1.5.9",
+  "com.github.shayanlinux" % "play-plugins-salat_2.11" % "1.6.0",
+//Thanks for using https://jar-download.com                ,
+  "com.novus" %% "salat" % "1.9.9",
+  "se.radley" %% "play-plugins-salat" % "1.5.0",
+  "org.mongodb" %% "casbah" % "3.1.1",
   "com.typesafe.play" %% "play-json" % "2.5.19",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.12.1",
   "com.mohiva" %% "play-silhouette" % "4.0.0",
