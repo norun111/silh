@@ -89,6 +89,7 @@ class GoalController @Inject() (
     }.getOrElse(Future.successful(BadRequest("Invalid format")))
   }
 
+  // Error Handle
   val testGoal: Seq[Goal] = Seq(Goal(goalID = "test", name = "test", learning_time = 1000, challengers_num = 0))
 
   def saveUserGoal = Action {
@@ -97,22 +98,23 @@ class GoalController @Inject() (
         formWithErrors => BadRequest(views.html.goals.index(testGoal, "test", UUID.randomUUID().toString, formWithErrors)),
         userGoal => {
           collection.flatMap(_.insert(userGoal))
+
           // use Casbah Find method
           val goalQuery = MongoDBObject("goalID" -> userGoal.goal_id)
           val goal = collGoal findOne goalQuery
           val goalObj = grater[Goal].asObject(goal.get) // .get is so important
-          println(userGoal.user_id)
+
+          // use Casbah Find method
           val userQuery = MongoDBObject("userId" -> userGoal.user_id)
           val user = collUser findOne userQuery
-          val userObj = grater[User].asObject(user.get)
+          val userObj = grater[User].asObject(user.get) // .get is so important
 
+          // insert goal into column goal of User model
           userRepo.updateUserGoal(userGoal.user_id, goalObj, userObj)
-
           // get "learning_time"
-          //          val learning_time = goal.get("learning_time").asInstanceOf[Double]
-          //          println(learning_time)
-          //          usersGoalRepo.updateLearningTime(userGoal.usersGoalID, learning_time, userGoal)
-
+          // val learning_time = goal.get("learning_time").asInstanceOf[Double]
+          // println(learning_time)
+          usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, userObj)
           Ok(views.html.goals.test())
         }
       )
