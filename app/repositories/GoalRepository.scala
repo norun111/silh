@@ -2,9 +2,12 @@ package repositories
 
 import java.util.UUID
 
+import com.mongodb.casbah.Imports.MongoConnection
+import com.mongodb.casbah.commons.MongoDBObject
 import javax.inject.Inject
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.play.json.collection.JSONCollection
+
 import scala.concurrent.{ ExecutionContext, Future }
 import models.Goal
 import reactivemongo.bson.BSONObjectID
@@ -20,6 +23,7 @@ import play.api.libs.json._
 import scala.concurrent.ExecutionContext.Implicits.global
 import reactivemongo.bson.BSONDocument
 import reactivemongo.api.collections.bson.BSONCollection
+import com.mongodb.casbah.query.dsl.IncOp
 
 class GoalRepository @Inject() (
     implicit
@@ -28,6 +32,8 @@ class GoalRepository @Inject() (
 ) {
   private def collection: Future[JSONCollection] =
     reactiveMongoApi.database.map(_.collection("goal"))
+
+  val col = MongoConnection()("silhouette")("goal")
 
   // sort by "challengers_num"
   def list(limit: Int = 100): Future[Seq[Goal]] =
@@ -53,6 +59,18 @@ class GoalRepository @Inject() (
       ),
       true
     ).map(_.result[Goal]))
+
+  def updateChallengersNum(id: String, goal: Goal) = {
+    val query = MongoDBObject("goalID" -> id)
+    val challengers_num = goal.challengers_num + 1
+    println(challengers_num)
+    col.update(query, MongoDBObject(
+      "goalID" -> goal.goalID,
+      "name" -> goal.name,
+      "learning_time" -> goal.learning_time,
+      "challengers_num" -> challengers_num
+    ))
+  }
 
   // Add challengers_num when user chooses goal
   val addChallengerNum = (num: Int) => num + 1
