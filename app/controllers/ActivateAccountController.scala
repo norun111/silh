@@ -1,11 +1,13 @@
 package controllers
 
 import java.net.URLDecoder
-import java.util.UUID
-import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import com.mongodb.casbah.Imports._
+import com.novus.salat.{ Context, StringTypeHintStrategy, TypeHintFrequency }
+import javax.inject.Inject
+import models.daos._
 import models.services.{ AuthTokenService, UserService }
 import play.api.i18n.{ I18nSupport, Messages, MessagesApi }
 import play.api.libs.concurrent.Execution.Implicits._
@@ -13,7 +15,7 @@ import play.api.libs.mailer.{ Email, MailerClient }
 import play.api.mvc.Controller
 import utils.auth.DefaultEnv
 
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.language.postfixOps
 
 /**
@@ -30,11 +32,21 @@ class ActivateAccountController @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
   userService: UserService,
+  ec: ExecutionContext,
+  authTokenDAOImpl: AuthTokenDAOImpl,
+  userDAOImpl: UserDAOImpl,
   authTokenService: AuthTokenService,
   mailerClient: MailerClient,
   implicit val webJarAssets: WebJarAssets
 )
     extends Controller with I18nSupport {
+
+  val col = MongoConnection()("silhouette")("silhouette.token")
+
+  implicit val ctx = new Context {
+    val name = "Custom_Classloader"
+    override val typeHintStrategy = StringTypeHintStrategy(when = TypeHintFrequency.WhenNecessary, typeHint = "_t")
+  }
 
   /**
    * Sends an account activation email to the user with the given email.
@@ -72,11 +84,12 @@ class ActivateAccountController @Inject() (
    * @return The result to display.
    */
   def activate(token: String) = silhouette.UnsecuredAction.async { implicit request =>
-    println(authTokenService.validate(token))
+
     authTokenService.validate(token).flatMap {
       case Some(authToken) => userService.retrieve(authToken.userID).flatMap {
         case Some(user) if user.loginInfo.providerID == CredentialsProvider.ID =>
           userService.save(user.copy(activated = true)).map { _ =>
+            println("success")
             Redirect(routes.SignInController.view()).flashing("success" -> Messages("account.activated"))
           }
         case _ => Future.successful(Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.activation.link")))
