@@ -12,7 +12,6 @@ import models.{ Goal, User }
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.bson._
 //import com.mongodb.casbah.Imports._
-import org.mongodb.scala.ReadPreference
 import play.api.mvc.Action
 import models.User_goals
 import reactivemongo.api._
