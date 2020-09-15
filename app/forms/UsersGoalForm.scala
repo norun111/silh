@@ -1,6 +1,6 @@
 package forms
 
-import models.User_goals
+import models.UsersGoal
 import play.api.data.Forms.{ mapping, of }
 import play.api.data.Form
 import play.api.data.Forms._
@@ -14,7 +14,7 @@ object UsersGoalForm {
       "user_id" -> text,
       "goal_id" -> text,
       "learning_time" -> of(doubleFormat)
-    )(User_goals.apply)(User_goals.unapply)
+    )(UsersGoal.apply)(UsersGoal.unapply)
   )
 
 }
