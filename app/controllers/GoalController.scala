@@ -2,39 +2,27 @@ package controllers
 
 import java.util.UUID
 
-import com.mongodb.client._
-import com.novus.salat.util.encoding.TypeHintEncoding
-import org.bson.Document
-
 //Import ReactiveMongo plug-in
 import play.modules.reactivemongo.{ MongoController, ReactiveMongoApi, ReactiveMongoComponents }
 
 //Import BSON-JSON conversions/collection
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mongodb.casbah.Imports._
-import com.mongodb.casbah.MongoCollection
+import com.novus.salat._
+import forms.UsersGoalForm.form
 import javax.inject._
 import models.{ Goal, _ }
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.format.Formats._
 import play.api.i18n.{ I18nSupport, MessagesApi }
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.api.mvc._
-import reactivemongo.play.json._
 import reactivemongo.play.json.collection.{ JSONCollection, _ }
 import repositories._
 import utils.auth.DefaultEnv
-import models.daos.Helpers._
-import com.novus.salat._
-import forms.UsersGoalForm.form
 //import com.novus.salat.global._
 import scala.concurrent.{ ExecutionContext, Future }
-import com.mongodb.MongoClient
-import scala.collection.immutable.IndexedSeq
-import com.mongodb.client.MongoCollection
-import play.api.Environment
+import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.Updates._
 
 class GoalController @Inject() (
     val reactiveMongoApi: ReactiveMongoApi,
