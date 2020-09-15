@@ -98,9 +98,7 @@ class SignUpController @Inject() (
               authInfo <- authInfoRepository.add(loginInfo, authInfo)
               authToken <- authTokenService.create(user.userID)
             } yield {
-              println(authToken.id)
               val mailurl = routes.ActivateAccountController.activate(authToken.id).absoluteURL()
-              println(mailurl)
               mailerClient.send(Email(
                 subject = Messages("email.already.signed.up.subject"),
                 from = Messages("Mister FROM <from@gmail.com>"),
