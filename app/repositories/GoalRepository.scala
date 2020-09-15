@@ -14,7 +14,7 @@ import reactivemongo.bson.BSONObjectID
 import reactivemongo.bson._
 //import com.mongodb.casbah.Imports._
 import play.api.mvc.Action
-import models.User_goals
+import models.UsersGoal
 import reactivemongo.api._
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.play.json._
