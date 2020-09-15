@@ -1,35 +1,28 @@
 package models.daos
 
-import java.util.UUID
-
+import com.mongodb.casbah.Imports.MongoConnection
 import javax.inject._
 import models.AuthToken
 import org.joda.time.DateTime
-import org.mongodb.scala.{ Document, MongoClient, MongoCollection, MongoDatabase }
-import play.api.libs.json._
-import reactivemongo.api.commands.bson.BSONCountCommandImplicits._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import reactivemongo.api._
-import reactivemongo.play.json._
 import play.modules.reactivemongo._
-import reactivemongo.api.collections.GenericQueryBuilder
-//import reactivemongo.bson.BSONDocument
+import reactivemongo.api._
+import reactivemongo.bson.{ BSONDocument, _ }
+import reactivemongo.play.json._
 import reactivemongo.play.json.collection.JSONCollection
-import Helpers._
-import scala.concurrent.Future
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import reactivemongo.bson._
-import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.api.bson.BSONDocument
+import scala.concurrent.{ ExecutionContext, Future }
 import play.api.libs.json._
 
 /**
  * Give access to the [[AuthToken]] object.
  */
-class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends AuthTokenDAO {
+class AuthTokenDAOImpl @Inject() (implicit
+  ec: ExecutionContext,
+    reactiveMongoApi: ReactiveMongoApi) extends AuthTokenDAO {
 
-  def collection: Future[BSONCollection] = reactiveMongoApi.database.map(_.collection("silhouette.token"))
+  private def collection: Future[JSONCollection] =
+    reactiveMongoApi.database.map(_.collection("silhouette.token"))
 
   /**
    * Finds a token by its ID.
@@ -39,8 +32,13 @@ class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extend
    */
 
   def find(id: String): Future[Option[AuthToken]] = {
-    println("token_id:", id)
     collection.flatMap(_.find(BSONDocument("id" -> id)).one[AuthToken])
+  }
+
+  def list(limit: Int = 100): Future[Seq[AuthToken]] = {
+    println(collection)
+    collection.flatMap(_.find(BSONDocument.empty)
+      .cursor[AuthToken]().collect[Seq](limit, Cursor.FailOnError[Seq[AuthToken]]()))
   }
 
   /**
