@@ -21,7 +21,7 @@ class UsersGoalRepository @Inject() (
 
   val col = MongoConnection()("silhouette")("users_goal")
 
-  def update(id: String, leaning_time: Double, users_goal: User_goals): Future[Option[User_goals]] =
+  def update(id: String, leaning_time: Double, users_goal: UsersGoal): Future[Option[UsersGoal]] =
     collection.flatMap(_.findAndUpdate(
       BSONDocument("usersGoalID" -> id),
       BSONDocument(
@@ -33,9 +33,9 @@ class UsersGoalRepository @Inject() (
         )
       ),
       true
-    ).map(_.result[User_goals]))
+    ).map(_.result[UsersGoal]))
 
-  def updateLearningTime(id: String, users_goal: User_goals, user: User) = {
+  def updateLearningTime(id: String, users_goal: UsersGoal, user: User) = {
     val query = MongoDBObject("usersGoalID" -> id)
     println(col.findOne(query))
     col.update(query, MongoDBObject(
