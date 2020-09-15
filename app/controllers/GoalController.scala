@@ -54,9 +54,10 @@ class GoalController @Inject() (
     // sort by descending "challengers_num"
     // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     val uuid = UUID.randomUUID
-    println(uuid)
+    println(goalRepo.list())
     goalRepo.list().map {
       goals =>
+        println(goals)
         Ok(views.html.goals.index(goals, userID, uuid.toString, form))
     }
   }
