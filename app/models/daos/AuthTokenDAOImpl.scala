@@ -1,24 +1,35 @@
 package models.daos
 
 import java.util.UUID
+
 import javax.inject._
 import models.AuthToken
 import org.joda.time.DateTime
+import org.mongodb.scala.{ Document, MongoClient, MongoCollection, MongoDatabase }
 import play.api.libs.json._
+import reactivemongo.api.commands.bson.BSONCountCommandImplicits._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 import reactivemongo.api._
 import reactivemongo.play.json._
 import play.modules.reactivemongo._
+import reactivemongo.api.collections.GenericQueryBuilder
+//import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.collection.JSONCollection
+import Helpers._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import reactivemongo.bson._
+import reactivemongo.api.collections.bson.BSONCollection
+import reactivemongo.api.bson.BSONDocument
+import play.api.libs.json._
 
 /**
  * Give access to the [[AuthToken]] object.
  */
 class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends AuthTokenDAO {
 
-  def collection: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("silhouette.token"))
+  def collection: Future[BSONCollection] = reactiveMongoApi.database.map(_.collection("silhouette.token"))
 
   /**
    * Finds a token by its ID.
@@ -26,9 +37,10 @@ class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extend
    * @param id The unique token ID.
    * @return The found token or None if no token for the given ID could be found.
    */
+
   def find(id: String): Future[Option[AuthToken]] = {
-    val query = Json.obj("id" -> id)
-    collection.flatMap(_.find(query).one[AuthToken])
+    println("token_id:", id)
+    collection.flatMap(_.find(BSONDocument("id" -> id)).one[AuthToken])
   }
 
   /**
