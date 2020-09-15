@@ -38,7 +38,8 @@ class ApplicationController @Inject() (
    *         else views.html.goals.index(goals, request.identity) processing register goal
    */
   def index = silhouette.SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.home(request.identity)))
+    //    Future.successful(Ok(views.html.home(request.identity)))
+    Future.successful(Ok(views.html.goals.confirm(request.identity.userID)))
   }
 
   /**
