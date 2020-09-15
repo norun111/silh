@@ -29,7 +29,7 @@ class AuthTokenServiceImpl @Inject() (authTokenDAO: AuthTokenDAO, clock: Clock) 
    * @return The saved auth token.
    */
   def create(userID: String, expiry: FiniteDuration = 5 minutes) = {
-    val token = AuthToken(UUID.randomUUID().toString, userID, clock.now.withZone(DateTimeZone.UTC).plusSeconds(expiry.toSeconds.toInt))
+    val token = AuthToken(UUID.randomUUID().toString, userID, Option(clock.now.withZone(DateTimeZone.UTC).plusSeconds(expiry.toSeconds.toInt)))
     authTokenDAO.save(token)
   }
 
