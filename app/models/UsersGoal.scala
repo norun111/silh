@@ -8,14 +8,14 @@ import play.api.libs.functional.syntax._
 
 import scala.util.Try
 
-case class User_goals(
+case class UsersGoal(
   usersGoalID: String = UUID.randomUUID.toString,
   user_id: String,
   goal_id: String,
   learning_time: Double
 )
 
-object User_goals {
+object UsersGoal {
   import play.api.libs.json._
   implicit object BSONObjectIDFormat extends Format[BSONObjectID] {
     def writes(objectId: BSONObjectID): JsValue = JsString(objectId.toString())
@@ -30,12 +30,12 @@ object User_goals {
     }
   }
 
-  implicit val goalFormat: OFormat[User_goals] = (
+  implicit val goalFormat: OFormat[UsersGoal] = (
     (JsPath \ "usersGoalID").format[String] and
     (JsPath \ "user_id").format[String] and
     (JsPath \ "goal_id").format[String] and
     (JsPath \ "learning_time").format[Double]
-  )(User_goals.apply, unlift(User_goals.unapply))
+  )(UsersGoal.apply, unlift(UsersGoal.unapply))
 
   //  implicit val goalFormat: OFormat[User_goals] = Json.format[User_goals]
 }

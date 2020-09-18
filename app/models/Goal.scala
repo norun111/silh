@@ -14,7 +14,7 @@ import com.novus.salat.Context
 case class Goal(
   goalID: String,
   name: String,
-  learning_time: Int,
+  learning_time: Double,
   challengers_num: Int
 )
 

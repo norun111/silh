@@ -1,24 +1,28 @@
 package models.daos
 
-import java.util.UUID
+import com.mongodb.casbah.Imports.MongoConnection
 import javax.inject._
 import models.AuthToken
 import org.joda.time.DateTime
-import play.api.libs.json._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
-import reactivemongo.api._
-import reactivemongo.play.json._
 import play.modules.reactivemongo._
+import reactivemongo.api._
+import reactivemongo.bson.{ BSONDocument, _ }
+import reactivemongo.play.json._
 import reactivemongo.play.json.collection.JSONCollection
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ ExecutionContext, Future }
+import play.api.libs.json._
 
 /**
  * Give access to the [[AuthToken]] object.
  */
-class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends AuthTokenDAO {
+class AuthTokenDAOImpl @Inject() (implicit
+  ec: ExecutionContext,
+    reactiveMongoApi: ReactiveMongoApi) extends AuthTokenDAO {
 
-  def collection: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("silhouette.token"))
+  private def collection: Future[JSONCollection] =
+    reactiveMongoApi.database.map(_.collection("silhouette.token"))
 
   /**
    * Finds a token by its ID.
@@ -26,9 +30,15 @@ class AuthTokenDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extend
    * @param id The unique token ID.
    * @return The found token or None if no token for the given ID could be found.
    */
+
   def find(id: String): Future[Option[AuthToken]] = {
-    val query = Json.obj("id" -> id)
-    collection.flatMap(_.find(query).one[AuthToken])
+    collection.flatMap(_.find(BSONDocument("id" -> id)).one[AuthToken])
+  }
+
+  def list(limit: Int = 100): Future[Seq[AuthToken]] = {
+    println(collection)
+    collection.flatMap(_.find(BSONDocument.empty)
+      .cursor[AuthToken]().collect[Seq](limit, Cursor.FailOnError[Seq[AuthToken]]()))
   }
 
   /**

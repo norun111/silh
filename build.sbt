@@ -26,9 +26,9 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 
 libraryDependencies ++= Seq(
 //  "org.reactivemongo" %% "reactivemongo-play-json" % "0.20.11-play25",
-//  "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
+  "org.reactivemongo" %% "reactivemongo-bson-api" % "0.18.0",
 //  "org.reactivemongo" %% "reactivemongo" % "0.11.14",
-//  "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "1.1.1",
   "net.cloudinsights" %% "play-plugins-salat" % "1.5.9",
   "com.github.shayanlinux" % "play-plugins-salat_2.11" % "1.6.0",
 //Thanks for using https://jar-download.com                ,
@@ -49,7 +49,6 @@ libraryDependencies ++= Seq(
   "com.enragedginger" %% "akka-quartz-scheduler" % "1.5.0-akka-2.4.x",
   "com.adrianhurt" %% "play-bootstrap" % "1.0-P25-B3",
   "com.mohiva" %% "play-silhouette-testkit" % "4.0.0" % "test",
-  "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0",
   specs2 % Test,
   cache,
   filters

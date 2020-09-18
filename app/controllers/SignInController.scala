@@ -72,6 +72,7 @@ class SignInController @Inject() (
           userService.retrieve(loginInfo).flatMap {
             case Some(user) if !user.activated =>
               Future.successful(Ok(views.html.activateAccount(data.email)))
+
             case Some(user) =>
               val c = configuration.underlying
               silhouette.env.authenticatorService.create(loginInfo).map {

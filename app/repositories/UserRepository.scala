@@ -12,9 +12,8 @@ import models.{ Goal, User }
 import reactivemongo.bson.BSONObjectID
 import reactivemongo.bson._
 //import com.mongodb.casbah.Imports._
-import org.mongodb.scala.ReadPreference
 import play.api.mvc.Action
-import models.User_goals
+import models.UsersGoal
 import reactivemongo.api._
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.play.json._
@@ -34,7 +33,7 @@ class UserRepository @Inject() (
     reactiveMongoApi.database.map(_.collection("goal"))
 
   def find(id: String): Future[Option[User]] =
-    col.flatMap(_.find(BSONDocument("userID" -> id)).one[User])
+    col.flatMap(_.find(BSONDocument("userId" -> id)).one[User])
 
   def updateUserGoal(id: String, goal: Goal, user: User) = {
     val query = MongoDBObject("userId" -> id)
