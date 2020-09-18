@@ -50,6 +50,10 @@ class GoalController @Inject() (
     Future(Ok(views.html.goals.confirm(request.identity.userID)))
   }
 
+//  def calculate = silhouette.SecuredAction.async { implicit request =>
+//    Future(Ok(views.html.goals.confirm(request.identity.userID)))
+//  }
+
   def listGoals(userID: String = UUID.randomUUID.toString) = Action.async { implicit request =>
     // sort by descending "challengers_num"
     // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
@@ -93,11 +97,8 @@ class GoalController @Inject() (
           // insert goal into column goal of User model
           userRepo.updateUserGoal(userGoal.user_id, goalObj, userObj)
           goalRepo.updateChallengersNum(userGoal.goal_id, goalObj)
-          // get "learning_time"
-          // val learning_time = goal.get("learning_time").asInstanceOf[Double]
-          // println(learning_time)
           println(userObj)
-          //          usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, userObj)
+//          usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, userObj)
           Ok(views.html.goals.test())
         }
       )
