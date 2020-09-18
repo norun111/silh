@@ -7,6 +7,7 @@ import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mongodb.casbah.Imports._
 import com.novus.salat.{ Context, StringTypeHintStrategy, TypeHintFrequency }
 import javax.inject.Inject
+import models.User
 import models.daos._
 import models.services.{ AuthTokenService, UserService }
 import play.api.i18n.{ I18nSupport, Messages, MessagesApi }
@@ -14,7 +15,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.mailer.{ Email, MailerClient }
 import play.api.mvc.Controller
 import utils.auth.DefaultEnv
-
+import com.novus.salat._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.language.postfixOps
 
