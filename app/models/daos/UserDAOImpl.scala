@@ -50,7 +50,6 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
   }
 
   def list(limit: Int = 100): Future[Seq[User]] = {
-    println(collection)
     collection.flatMap(_.find(BSONDocument.empty)
       .cursor[User]().collect[Seq](limit, Cursor.FailOnError[Seq[User]]()))
   }
@@ -63,26 +62,27 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
    */
   def save(user: User): Future[User] = {
     println("save")
-    collection.flatMap(_.update(Json.obj("userID" -> user.userID), user, upsert = true))
+    collection.flatMap(_.update(Json.obj("userId" -> user.userID), user, upsert = true))
     Future.successful(user)
   }
 
-//  def updateActivate(id: String, user: User): Future[Option[User]] =
-//    collection.flatMap(_.findAndUpdate(
-//      BSONDocument("userId" -> id),
-//      BSONDocument(
-//        f"$$set" -> BSONDocument(
-//          "userId" -> user.userID,
-//          "loginInfo" -> user.loginInfo,
-//          "firstName" -> user.firstName,
-//          "lastName" -> user.lastName,
-//          "fullName" -> user.fullName,
-//          "email" -> user.email,
-//          "avatarURL" -> user.avatarURL,
-//          "activated" -> true,
-//          "goal" -> user.goal
-//        )
-//      ),
-//      true
-//    ).map(_.result[User]))
+  //  def updateActivate(id: String, user: User): Future[Option[User]] =
+  //    collection.flatMap(_.findAndUpdate(
+  //      BSONDocument("userId" -> id),
+  //      BSONDocument(
+  //        f"$$set" -> BSONDocument(
+  //          "userId" -> user.userID,
+  //          "loginInfo" -> user.loginInfo,
+  //          "firstName" -> user.firstName,
+  //          "lastName" -> user.lastName,
+  //          "fullName" -> user.fullName,
+  //          "email" -> user.email,
+  //          "avatarURL" -> user.avatarURL,
+  //          "activated" -> true,
+  //          "goal" -> user.goal
+  //        )
+  //      ),
+  //      true
+  //    ).map(_.result[User]))
+  //
 }
