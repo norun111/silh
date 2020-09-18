@@ -33,7 +33,7 @@ class UserRepository @Inject() (
     reactiveMongoApi.database.map(_.collection("goal"))
 
   def find(id: String): Future[Option[User]] =
-    col.flatMap(_.find(BSONDocument("userID" -> id)).one[User])
+    col.flatMap(_.find(BSONDocument("userId" -> id)).one[User])
 
   def updateUserGoal(id: String, goal: Goal, user: User) = {
     val query = MongoDBObject("userId" -> id)
