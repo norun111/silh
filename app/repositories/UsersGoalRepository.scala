@@ -35,15 +35,15 @@ class UsersGoalRepository @Inject() (
       true
     ).map(_.result[UsersGoal]))
 
-//  def updateLearningTime(id: String, users_goal: UsersGoal, user: User) = {
-//    val query = MongoDBObject("usersGoalID" -> id)
-//    println(col.findOne(query))
-//    col.update(query, MongoDBObject(
-//      "usersGoalID" -> users_goal.usersGoalID,
-//      "user_id" -> users_goal.user_id,
-//      "goal_id" -> users_goal.goal_id,
-//      "learning_time" -> user.goal.get.learning_time
-//    ))
-//  }
+  def updateLearningTime(id: String, users_goal: UsersGoal, learning_time: Double) = {
+    val query = MongoDBObject("usersGoalID" -> id)
+    println(col.findOne(query))
+    col.update(query, MongoDBObject(
+      "usersGoalID" -> users_goal.usersGoalID,
+      "user_id" -> users_goal.user_id,
+      "goal_id" -> users_goal.goal_id,
+      "learning_time" -> learning_time
+    ))
+  }
 
 }
