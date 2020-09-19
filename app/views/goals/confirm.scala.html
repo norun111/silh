@@ -1,3 +1,4 @@
 @(userID: String)
+    @import b3.inline.fieldConstructor
 
-<a href="@routes.GoalController.listGoals(userID)">Goal</a>
+<a id="submit" href="@routes.GoalController.listGoals(userID)" class="btn btn-lg btn-primary btn-block">Start</a>
