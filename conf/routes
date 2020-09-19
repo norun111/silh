@@ -25,7 +25,7 @@ GET         /account/email/:email            controllers.ActivateAccountControll
 GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: String)
 
 # Goal
-GET         /confirm                         controllers.GoalController.confirm
+GET         /calculate/:userId               controllers.GoalController.calculate(userId: String)
 GET         /goals/:userId                   controllers.GoalController.listGoals(userId: String)
 POST        /goals/create                    controllers.GoalController.createGoal
 GET         /goals/:_id                      controllers.GoalController.readGoal(_id: String)
