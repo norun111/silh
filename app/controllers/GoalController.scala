@@ -50,9 +50,9 @@ class GoalController @Inject() (
     Future(Ok(views.html.goals.confirm(request.identity.userID)))
   }
 
-//  def calculate = silhouette.SecuredAction.async { implicit request =>
-//    Future(Ok(views.html.goals.confirm(request.identity.userID)))
-//  }
+  //  def calculate = silhouette.SecuredAction.async { implicit request =>
+  //    Future(Ok(views.html.goals.confirm(request.identity.userID)))
+  //  }
 
   def listGoals(userID: String = UUID.randomUUID.toString) = Action.async { implicit request =>
     // sort by descending "challengers_num"
@@ -94,11 +94,15 @@ class GoalController @Inject() (
           val user = collUser findOne userQuery
           val userObj = grater[User].asObject(user.get) // .get is so important
 
+          goalRepo.find(userGoal.goal_id).flatMap {
+            case Some(goal) =>
+              usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, goal.learning_time)
+              println(goal)
+              Future(goal)
+          }
           // insert goal into column goal of User model
           userRepo.updateUserGoal(userGoal.user_id, goalObj, userObj)
           goalRepo.updateChallengersNum(userGoal.goal_id, goalObj)
-          println(userObj)
-//          usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, userObj)
           Ok(views.html.goals.test())
         }
       )
