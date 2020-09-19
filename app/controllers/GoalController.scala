@@ -2,6 +2,8 @@ package controllers
 
 import java.util.UUID
 
+import play.api.i18n.Messages
+
 //Import ReactiveMongo plug-in
 import play.modules.reactivemongo.{ MongoController, ReactiveMongoApi, ReactiveMongoComponents }
 
@@ -10,6 +12,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import forms.UsersGoalForm.form
+import forms.UserForm.userForm
 import javax.inject._
 import models.{ Goal, _ }
 import play.api.i18n.{ I18nSupport, MessagesApi }
@@ -46,23 +49,17 @@ class GoalController @Inject() (
   val collGoal = MongoConnection()("silhouette")("goal")
   val collUser = MongoConnection()("silhouette")("silhouette.user")
 
-  def confirm = silhouette.SecuredAction.async { implicit request =>
-    Future(Ok(views.html.goals.confirm(request.identity.userID)))
+  def calculate(userID: String) = Action { implicit request =>
+    Ok(views.html.goals.calculate(userForm))
   }
 
-  //  def calculate = silhouette.SecuredAction.async { implicit request =>
-  //    Future(Ok(views.html.goals.confirm(request.identity.userID)))
-  //  }
-
-  def listGoals(userID: String = UUID.randomUUID.toString) = Action.async { implicit request =>
+  def listGoals(userID: String = UUID.randomUUID.toString) = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
     // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     val uuid = UUID.randomUUID
-    println(goalRepo.list())
     goalRepo.list().map {
       goals =>
-        println(goals)
-        Ok(views.html.goals.index(goals, userID, uuid.toString, form))
+        Ok(views.html.goals.index(goals, request.identity, uuid.toString, form))
     }
   }
 
@@ -77,10 +74,10 @@ class GoalController @Inject() (
   // Error Handle
   val testGoal: Seq[Goal] = Seq(Goal(goalID = "Error", name = "Error", learning_time = 1000, challengers_num = 0))
 
-  def saveUserGoal = Action {
+  def saveUserGoal = silhouette.SecuredAction.async {
     implicit request =>
       form.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.goals.index(testGoal, "test", UUID.randomUUID().toString, formWithErrors)),
+        formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, UUID.randomUUID().toString, formWithErrors))),
         userGoal => {
           collection.flatMap(_.insert(userGoal))
 
@@ -97,13 +94,13 @@ class GoalController @Inject() (
           goalRepo.find(userGoal.goal_id).flatMap {
             case Some(goal) =>
               usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, goal.learning_time)
-              println(goal)
               Future(goal)
+            case None => Future.successful(Redirect(routes.GoalController.saveUserGoal()).flashing("error" -> Messages("invalid")))
           }
           // insert goal into column goal of User model
           userRepo.updateUserGoal(userGoal.user_id, goalObj, userObj)
           goalRepo.updateChallengersNum(userGoal.goal_id, goalObj)
-          Ok(views.html.goals.test())
+          Future(Redirect(s"/calculate/${userGoal.user_id}"))
         }
       )
   }
