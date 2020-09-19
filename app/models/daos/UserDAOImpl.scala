@@ -35,7 +35,6 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
    */
   def find(loginInfo: LoginInfo): Future[Option[User]] = {
     val query = Json.obj("loginInfo" -> loginInfo)
-    println(loginInfo)
     collection.flatMap(_.find(query).one[User])
   }
 
