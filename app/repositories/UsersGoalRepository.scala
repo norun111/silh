@@ -37,7 +37,6 @@ class UsersGoalRepository @Inject() (
 
   def updateLearningTime(id: String, users_goal: UsersGoal, learning_time: Double) = {
     val query = MongoDBObject("usersGoalID" -> id)
-    println(col.findOne(query))
     col.update(query, MongoDBObject(
       "usersGoalID" -> users_goal.usersGoalID,
       "user_id" -> users_goal.user_id,
