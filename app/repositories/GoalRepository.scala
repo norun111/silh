@@ -62,7 +62,6 @@ class GoalRepository @Inject() (
   def updateChallengersNum(id: String, goal: Goal) = {
     val query = MongoDBObject("goalID" -> id)
     val challengers_num = goal.challengers_num + 1
-    println(challengers_num)
     col.update(query, MongoDBObject(
       "goalID" -> goal.goalID,
       "name" -> goal.name,
