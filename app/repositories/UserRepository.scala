@@ -37,7 +37,6 @@ class UserRepository @Inject() (
 
   def updateUserGoal(id: String, goal: Goal, user: User) = {
     val query = MongoDBObject("userId" -> id)
-    println(collection.findOne(query))
     collection.update(query, MongoDBObject(
       "userId" -> user.userID,
       "loginInfo" -> user.loginInfo,
@@ -47,7 +46,8 @@ class UserRepository @Inject() (
       "email" -> user.email,
       "avatarURL" -> user.avatarURL,
       "activated" -> user.activated,
-      "goal" -> goal
+      "goal" -> goal,
+      "wTime" -> user.wTime
     ))
   }
 }
