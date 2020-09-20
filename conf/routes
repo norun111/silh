@@ -29,8 +29,8 @@ GET         /calculate/:userId               controllers.GoalController.calculat
 GET         /goals/:userId                   controllers.GoalController.listGoals(userId: String)
 POST        /goals/create                    controllers.GoalController.createGoal
 GET         /goals/:_id                      controllers.GoalController.readGoal(_id: String)
-PUT         /goals/:_id/update               controllers.GoalController.updateGoal(_id: String)
-PUT         /goals/:id/updateUserTime        controllers.GoalController.updateUserTime(id: String)
+POST         /goals/:_id/update               controllers.GoalController.updateGoal(_id: String)
+POST        /goals/:id/updateUserTime        controllers.GoalController.updateUserTime(id: String)
 DELETE      /goals/:_id/delete               controllers.GoalController.deleteGoal(_id: String)
 
 #UserGoal
