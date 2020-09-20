@@ -6,7 +6,7 @@ import javax.inject._
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mongodb.casbah.Imports.MongoConnection
 import com.mongodb.casbah.commons.MongoDBObject
-import models.User
+import models.{ Goal, User, UsersGoal }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json._
@@ -74,6 +74,20 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
     println("save")
     collection.flatMap(_.update(Json.obj("userId" -> user.userID), user, upsert = true))
     Future.successful(user)
+  }
+
+  def colGoal: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("goal"))
+
+  def saveGoal(goal: Goal): Future[Goal] = {
+    colGoal.flatMap(_.update(Json.obj("goalID" -> goal.goalID), goal, upsert = true))
+    Future.successful(goal)
+  }
+
+  def colUsersGoal: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("users_goal"))
+
+  def saveUsersGoal(usersGoal: UsersGoal): Future[UsersGoal] = {
+    colUsersGoal.flatMap(_.update(Json.obj("usersGoalID" -> usersGoal.usersGoalID), usersGoal, upsert = true))
+    Future.successful(usersGoal)
   }
 }
 
