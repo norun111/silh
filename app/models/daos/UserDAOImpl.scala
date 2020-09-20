@@ -19,10 +19,13 @@ import play.modules.reactivemongo._
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.collection.JSONCollection
 
+import scala.collection.mutable
+
 /**
  * Give access to the user object.
  */
 class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends UserDAO {
+  import UserDAOImpl.users
 
   def collection: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("silhouette.user"))
   val col = MongoConnection()("silhouette")("silhouette.user")
@@ -48,6 +51,14 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
     collection.flatMap(_.find(BSONDocument("userId" -> userID)).one[User])
   }
 
+  /**
+   * Finds a user by its user ID.
+   *
+   * @param userID The ID of the user to find.
+   * @return The found user or None if no user for the given ID could be found.
+   */
+  def findUser(userID: String) = Future.successful(users.get(userID))
+
   def list(limit: Int = 100): Future[Seq[User]] = {
     collection.flatMap(_.find(BSONDocument.empty)
       .cursor[User]().collect[Seq](limit, Cursor.FailOnError[Seq[User]]()))
@@ -64,24 +75,11 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
     collection.flatMap(_.update(Json.obj("userId" -> user.userID), user, upsert = true))
     Future.successful(user)
   }
+}
 
-  //  def updateActivate(id: String, user: User): Future[Option[User]] =
-  //    collection.flatMap(_.findAndUpdate(
-  //      BSONDocument("userId" -> id),
-  //      BSONDocument(
-  //        f"$$set" -> BSONDocument(
-  //          "userId" -> user.userID,
-  //          "loginInfo" -> user.loginInfo,
-  //          "firstName" -> user.firstName,
-  //          "lastName" -> user.lastName,
-  //          "fullName" -> user.fullName,
-  //          "email" -> user.email,
-  //          "avatarURL" -> user.avatarURL,
-  //          "activated" -> true,
-  //          "goal" -> user.goal
-  //        )
-  //      ),
-  //      true
-  //    ).map(_.result[User]))
-  //
+object UserDAOImpl {
+  /**
+   * The list of users.
+   */
+  val users: mutable.HashMap[String, User] = mutable.HashMap()
 }
