@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UsersGoalDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends UsersGoalDAO {
-  def collection: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection(".users_goal"))
+  def collection: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("users_goal"))
 
   def save(usersGoal: UsersGoal): Future[UsersGoal] = {
     collection.flatMap(_.update(Json.obj("usersGoalID" -> usersGoal.usersGoalID), usersGoal, upsert = true))
