@@ -15,6 +15,7 @@ import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import forms.UsersGoalForm.form
 import forms.UserForm.userForm
+import forms.TimeForm.timeForm
 import javax.inject._
 import models.{ Goal, _ }
 import play.api.i18n.{ I18nSupport, MessagesApi }
@@ -37,8 +38,6 @@ class GoalController @Inject() (
     goalRepo: GoalRepository,
     userRepo: UserRepository,
     userService: UserService,
-    goalDAO: GoalDAO,
-    usersGoalDAO: UsersGoalDAO,
     userDAO: UserDAO,
     usersGoalRepo: UsersGoalRepository,
     implicit val webJarAssets: WebJarAssets
@@ -89,9 +88,9 @@ class GoalController @Inject() (
                   userService.save(user.copy(goal = Option(goal)))
                   //                  userRepo.updateUserGoal(userGoal.user_id, goal, user)
                   val challengers_num = goal.challengers_num + 1
-                  goalDAO.save(goal.copy(challengers_num = challengers_num))
+                  userService.saveGoal(goal.copy(challengers_num = challengers_num))
                   //                  goalRepo.updateChallengersNum(userGoal.goal_id, goal)
-                  usersGoalDAO.save(userGoal.copy(learning_time = goal.learning_time))
+                  userService.saveUsersGoal(userGoal.copy(learning_time = goal.learning_time))
                   //                  usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, goal.learning_time)
                   Future(Redirect(routes.GoalController.calculate(userGoal.user_id)))
                 case None =>
@@ -104,23 +103,15 @@ class GoalController @Inject() (
   }
 
   def calculate(userID: String) = silhouette.SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.goals.calculate(request.identity, request.identity.goal, userForm)))
-    //    println("calculate:", userID)
-    //    userService.retrieve(userID).flatMap {
-    //      case Some(user) =>
-    //        println("user:", user)
-    //        Future(Ok(views.html.goals.calculate(user, user.goal, userForm)))
-    //      case None =>
-    //        Future.successful(Redirect(routes.ApplicationController.signOut()))
-    //    }
+    Future.successful(Ok(views.html.goals.calculate(request.identity, timeForm)))
   }
 
   def updateUserTime(id: String) = silhouette.SecuredAction.async {
     implicit request =>
-      userForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(views.html.goals.calculate(request.identity, request.identity.goal, formWithErrors))),
-        user => {
-          userRepo.updateTime(user.userID, user, user.goal.head, user.sTime, user.wTime, user.oTime)
+      timeForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(views.html.goals.calculate(request.identity, formWithErrors))),
+        time => {
+          userService.save(request.identity.copy(sTime = time.sTime, wTime = time.wTime, oTime = time.oTime))
           Future(Redirect(routes.ApplicationController.index()))
         }
       )
