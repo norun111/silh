@@ -1,14 +1,16 @@
-@(user: User, goal: Option[Goal], userForm: Form[User])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+@import forms.TimeForm
+@(user: User, timeForm: Form[TimeForm])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
     @import helper._
-@main("calculate_weekTime") {
+@main("register_weekTime") {
     @form(action = helper.CSRF(routes.GoalController.updateUserTime(user.userID))) {
         <div class="calculate-wrapper">
             <div class="form-row align-items-center">
                 <div class="col-auto my-1">
                     <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="sTime" onChange="calculate(this.form)">
-                        <option selected>Choose...</option>
+                    <p>Time of Sleeping</p>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="sTime">
+                        <option value="0">Choose...</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -37,8 +39,9 @@
                 </div>
                 <div class="col-auto my-1">
                     <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="wTime" onChange="calculate(this.form)">
-                        <option selected>Choose...</option>
+                    <p>Work・School Time</p>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="wTime">
+                        <option value="0">Choose...</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -67,8 +70,9 @@
                 </div>
                 <div class="col-auto my-1">
                     <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="oTime" onChange="calculate(this.form)">
-                        <option selected>Choose...</option>
+                    <p>Meal・Preparation・Housework Time</p>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="oTime">
+                        <option value="0">Choose...</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -95,15 +99,6 @@
                         <option value="24">24</option>
                     </select>
                 </div>
-                <input id="userID" name="userID" type="hidden" value="@user.userID">
-                <input id="loginInfo" name="loginInfo" type="hidden" value="@user.loginInfo">
-                <input id="firstName" name="firstName" type="hidden" value="@user.firstName">
-                <input id="lastName" name="lastName" type="hidden" value="@user.lastName">
-                <input id="fullName" name="fullName" type="hidden" value="@user.fullName">
-                <input id="email" name="email" type="hidden" value="@user.email">
-                <input id="avatarURL" name="avatarURL" type="hidden" value="@user.avatarURL">
-                <input id="activated" name="activated" type="hidden" value="@user.activated">
-                <input id="goal" name="goal" type="hidden" value="goal">
                 <div class="col-auto my-1">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
