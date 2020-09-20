@@ -2,7 +2,7 @@
 @(user: User, timeForm: Form[TimeForm])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
     @import helper._
-@main("register_weekTime") {
+@main("register_weekTime", Option(user)) {
     @form(action = helper.CSRF(routes.GoalController.updateUserTime(user.userID))) {
         <div class="calculate-wrapper">
             <div class="form-row align-items-center">
