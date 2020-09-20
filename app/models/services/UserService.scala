@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
-import models.User
+import models.{ Goal, User, UsersGoal }
 
 import scala.concurrent.Future
 
@@ -28,6 +28,10 @@ trait UserService extends IdentityService[User] {
    * @return The saved user.
    */
   def save(user: User): Future[User]
+
+  def saveGoal(goal: Goal): Future[Goal] // Works correctly
+
+  def saveUsersGoal(usersGoal: UsersGoal): Future[UsersGoal] // Works correctly
 
   /**
    * Saves the social profile for a user.
