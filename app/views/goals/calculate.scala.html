@@ -1,104 +1,113 @@
-@(userForm: Form[User])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+@(user: User, goal: Option[Goal], userForm: Form[User])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
+    @import helper._
 @main("calculate_weekTime") {
-
-    <form action="#" name="form1">
-    <div class="calculate-wrapper">
-        <div class="form-row align-items-center">
-            <div class="col-auto my-1">
-                <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="sleepTime" onChange="calculate(this.form)">
-                    <option selected>Choose...</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                </select>
-            </div>
-            <div class="col-auto my-1">
-                <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="workTime" onChange="calculate(this.form)">
-                    <option selected>Choose...</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                </select>
-            </div>
-            <div class="col-auto my-1">
-                <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
-                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="otherTime" onChange="calculate(this.form)">
-                    <option selected>Choose...</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                </select>
-            </div>
-            <div class="col-auto my-1">
-                <button type="submit" class="btn btn-primary">Submit</button>
+    @form(action = helper.CSRF(routes.GoalController.updateUserTime(user.userID))) {
+        <div class="calculate-wrapper">
+            <div class="form-row align-items-center">
+                <div class="col-auto my-1">
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="sTime" onChange="calculate(this.form)">
+                        <option selected>Choose...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+                <div class="col-auto my-1">
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="wTime" onChange="calculate(this.form)">
+                        <option selected>Choose...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+                <div class="col-auto my-1">
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                    <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="oTime" onChange="calculate(this.form)">
+                        <option selected>Choose...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+                <input id="userID" name="userID" type="hidden" value="@user.userID">
+                <input id="loginInfo" name="loginInfo" type="hidden" value="@user.loginInfo">
+                <input id="firstName" name="firstName" type="hidden" value="@user.firstName">
+                <input id="lastName" name="lastName" type="hidden" value="@user.lastName">
+                <input id="fullName" name="fullName" type="hidden" value="@user.fullName">
+                <input id="email" name="email" type="hidden" value="@user.email">
+                <input id="avatarURL" name="avatarURL" type="hidden" value="@user.avatarURL">
+                <input id="activated" name="activated" type="hidden" value="@user.activated">
+                <input id="goal" name="goal" type="hidden" value="goal">
+                <div class="col-auto my-1">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
             </div>
         </div>
-    </div>
-    </form>
+    }
 }
