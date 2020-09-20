@@ -59,16 +59,16 @@ class GoalRepository @Inject() (
       true
     ).map(_.result[Goal]))
 
-  def updateChallengersNum(id: String, goal: Goal) = {
-    val query = MongoDBObject("goalID" -> id)
-    val challengers_num = goal.challengers_num + 1
-    col.update(query, MongoDBObject(
-      "goalID" -> goal.goalID,
-      "name" -> goal.name,
-      "learning_time" -> goal.learning_time,
-      "challengers_num" -> challengers_num
-    ))
-  }
+  //  def updateChallengersNum(id: String, goal: Goal) = {
+  //    val query = MongoDBObject("goalID" -> id)
+  //    val challengers_num = goal.challengers_num + 1
+  //    col.update(query, MongoDBObject(
+  //      "goalID" -> goal.goalID,
+  //      "name" -> goal.name,
+  //      "learning_time" -> goal.learning_time,
+  //      "challengers_num" -> challengers_num
+  //    ))
+  //  }
 
   // Add challengers_num when user chooses goal
   val addChallengerNum = (num: Int) => num + 1
@@ -76,10 +76,4 @@ class GoalRepository @Inject() (
   def destroy(id: String): Future[Option[Goal]] =
     collection.flatMap(_.findAndRemove(BSONDocument("goalID" ->
       id)).map(_.result[Goal]))
-
-  def findOlder1(id: String, collection: BSONCollection): Future[Option[BSONDocument]] = {
-    val query = BSONDocument("goalID" -> id)
-    // MongoDB .findOne
-    collection.find(query).one[BSONDocument]
-  }
 }
