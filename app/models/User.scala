@@ -77,11 +77,11 @@ object User {
     (JsPath \ "activated").format[Boolean] and
     (JsPath \ "goal").format[Option[Goal]] and
     (JsPath \ "sTime").format[Int] and
-      (JsPath \ "wTime").format[Int] and
-      (JsPath \ "oTime").format[Int]
-    )(User.apply, unlift(User.unapply))
+    (JsPath \ "wTime").format[Int] and
+    (JsPath \ "oTime").format[Int]
+  )(User.apply, unlift(User.unapply))
 
-  //  implicit val jsonFormat = Json.format[User]
+  //  implicit val jsonFormat: OFormat[User] = Json.format[User]
 
   //  def toDBObject(user: User): DBObject = {
   //    DBObject(
