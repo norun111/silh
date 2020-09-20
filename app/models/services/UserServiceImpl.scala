@@ -42,6 +42,10 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    */
   def save(user: User) = userDAO.save(user)
 
+  def saveGoal(goal: Goal) = userDAO.saveGoal(goal)
+
+  def saveUsersGoal(usersGoal: UsersGoal) = userDAO.saveUsersGoal(usersGoal)
+
   /**
    * Saves the social profile for a user.
    *
