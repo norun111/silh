@@ -3,7 +3,7 @@ package models.daos
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import models.User
+import models.{ Goal, User, UsersGoal }
 
 import scala.concurrent.Future
 
@@ -35,4 +35,8 @@ trait UserDAO {
    * @return The saved user.
    */
   def save(user: User): Future[User]
+
+  def saveGoal(goal: Goal): Future[Goal]
+
+  def saveUsersGoal(usersGoal: UsersGoal): Future[UsersGoal]
 }
