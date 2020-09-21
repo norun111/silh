@@ -25,7 +25,6 @@ import scala.collection.mutable
  * Give access to the user object.
  */
 class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends UserDAO {
-  import UserDAOImpl.users
 
   def collection: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("silhouette.user"))
   val col = MongoConnection()("silhouette")("silhouette.user")
@@ -48,16 +47,8 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
    * @return The found user or None if no user for the given ID could be found.
    */
   def find(userID: String): Future[Option[User]] = {
-    collection.flatMap(_.find(BSONDocument("userId" -> userID)).one[User])
+    collection.flatMap(_.find(Json.obj("userId" -> userID)).one[User])
   }
-
-  /**
-   * Finds a user by its user ID.
-   *
-   * @param userID The ID of the user to find.
-   * @return The found user or None if no user for the given ID could be found.
-   */
-  def findUser(userID: String) = Future.successful(users.get(userID))
 
   def list(limit: Int = 100): Future[Seq[User]] = {
     collection.flatMap(_.find(BSONDocument.empty)
@@ -89,11 +80,4 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
     colUsersGoal.flatMap(_.update(Json.obj("usersGoalID" -> usersGoal.usersGoalID), usersGoal, upsert = true))
     Future.successful(usersGoal)
   }
-}
-
-object UserDAOImpl {
-  /**
-   * The list of users.
-   */
-  val users: mutable.HashMap[String, User] = mutable.HashMap()
 }
