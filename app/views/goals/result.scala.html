@@ -1,0 +1,12 @@
+@(user: User, week_time: Int, week_day_time: Int, week_day_end: Int, require_week: Int, require_month: String)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+
+@main("result_weekTime", Option(user)){
+    <div class="time-wrapper">
+        <p>Weekdays: @week_day_time hours</p>
+        <p>Holiday: @week_day_end hours</p>
+        <p>@week_time hours</p>
+        <p>@require_week weeks (@require_month months)</p>
+
+        <a href="#" class="btn btn-primary stretched-link">Go somewhere</a>
+    </div>
+}

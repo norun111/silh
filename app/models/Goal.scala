@@ -41,12 +41,12 @@ object Goal {
   //        (JsPath \ "challengers_num").format[Int]
   //      )(Goal.apply, unlift(Goal.unapply))
 
-  //  implicit val goalFormat: OFormat[Goal] = (
-  //    (JsPath \ "goalID").format[String] and
-  //    (JsPath \ "name").format[String] and
-  //    (JsPath \ "learning_time").format[Int] and
-  //    (JsPath \ "challengers_num").format[Int]
-  //  )(Goal.apply, unlift(Goal.unapply))
+  implicit val goalFormat: OFormat[Goal] = (
+    (JsPath \ "goalID").format[String] and
+    (JsPath \ "name").format[String] and
+    (JsPath \ "learning_time").format[Double] and
+    (JsPath \ "challengers_num").format[Int]
+  )(Goal.apply, unlift(Goal.unapply))
 
   //    implicit val goalReads: Reads[Goal] = (
   //      (JsPath \ "_id").readNullable[BSONObjectID] and
@@ -62,6 +62,6 @@ object Goal {
   //        (JsPath \ "challengers_num").write[Int] and
   //    )(unlift(Goal.unapply))
 
-  implicit val goalFormat: OFormat[Goal] = Json.format[Goal]
+  //  implicit val goalFormat: OFormat[Goal] = Json.format[Goal]
 }
 

@@ -34,7 +34,10 @@ case class User(
     email: Option[String],
     avatarURL: Option[String],
     activated: Boolean,
-    goal: Option[Goal]
+    goal: Option[Goal],
+    sTime: Int,
+    wTime: Int,
+    oTime: Int
 ) extends Identity {
 
   /**
@@ -72,10 +75,13 @@ object User {
     (JsPath \ "email").format[Option[String]] and
     (JsPath \ "avatarURL").format[Option[String]] and
     (JsPath \ "activated").format[Boolean] and
-    (JsPath \ "goal").format[Option[Goal]]
+    (JsPath \ "goal").format[Option[Goal]] and
+    (JsPath \ "sTime").format[Int] and
+    (JsPath \ "wTime").format[Int] and
+    (JsPath \ "oTime").format[Int]
   )(User.apply, unlift(User.unapply))
 
-  //  implicit val jsonFormat = Json.format[User]
+  //  implicit val jsonFormat: OFormat[User] = Json.format[User]
 
   //  def toDBObject(user: User): DBObject = {
   //    DBObject(

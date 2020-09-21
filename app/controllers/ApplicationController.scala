@@ -4,7 +4,7 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models.Goal
-import play.api.i18n.{ I18nSupport, MessagesApi }
+import play.api.i18n.{ I18nSupport, Messages, MessagesApi }
 import play.api.mvc.Controller
 import repositories.GoalRepository
 import utils.auth.DefaultEnv
@@ -38,8 +38,11 @@ class ApplicationController @Inject() (
    *         else views.html.goals.index(goals, request.identity) processing register goal
    */
   def index = silhouette.SecuredAction.async { implicit request =>
-    //    Future.successful(Ok(views.html.home(request.identity)))
-    Future.successful(Ok(views.html.goals.confirm(request.identity.userID)))
+    if (request.identity.goal == Nil) {
+      Future.successful(Ok(views.html.home(request.identity)))
+    } else {
+      Future(Redirect(routes.GoalController.listGoals(request.identity.userID)))
+    }
   }
 
   /**

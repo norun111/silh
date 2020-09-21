@@ -42,6 +42,10 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    */
   def save(user: User) = userDAO.save(user)
 
+  def saveGoal(goal: Goal) = userDAO.saveGoal(goal)
+
+  def saveUsersGoal(usersGoal: UsersGoal) = userDAO.saveUsersGoal(usersGoal)
+
   /**
    * Saves the social profile for a user.
    *
@@ -51,6 +55,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @return The user for whom the profile was saved.
    */
   def save(profile: CommonSocialProfile) = {
+    println("profile_save")
     userDAO.find(profile.loginInfo).flatMap {
       case Some(user) => // Update user with profile
         userDAO.save(user.copy(
@@ -70,7 +75,10 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
           email = profile.email,
           avatarURL = profile.avatarURL,
           activated = true,
-          goal = None
+          goal = None,
+          sTime = 0,
+          wTime = 0,
+          oTime = 0
         ))
     }
   }

@@ -6,7 +6,7 @@ import javax.inject._
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mongodb.casbah.Imports.MongoConnection
 import com.mongodb.casbah.commons.MongoDBObject
-import models.User
+import models.{ Goal, User, UsersGoal }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json._
@@ -18,6 +18,8 @@ import reactivemongo.api._
 import play.modules.reactivemongo._
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.collection.JSONCollection
+
+import scala.collection.mutable
 
 /**
  * Give access to the user object.
@@ -35,7 +37,6 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
    */
   def find(loginInfo: LoginInfo): Future[Option[User]] = {
     val query = Json.obj("loginInfo" -> loginInfo)
-    println(loginInfo)
     collection.flatMap(_.find(query).one[User])
   }
 
@@ -46,7 +47,7 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
    * @return The found user or None if no user for the given ID could be found.
    */
   def find(userID: String): Future[Option[User]] = {
-    collection.flatMap(_.find(BSONDocument("userId" -> userID)).one[User])
+    collection.flatMap(_.find(Json.obj("userId" -> userID)).one[User])
   }
 
   def list(limit: Int = 100): Future[Seq[User]] = {
@@ -66,23 +67,17 @@ class UserDAOImpl @Inject() (val reactiveMongoApi: ReactiveMongoApi) extends Use
     Future.successful(user)
   }
 
-  //  def updateActivate(id: String, user: User): Future[Option[User]] =
-  //    collection.flatMap(_.findAndUpdate(
-  //      BSONDocument("userId" -> id),
-  //      BSONDocument(
-  //        f"$$set" -> BSONDocument(
-  //          "userId" -> user.userID,
-  //          "loginInfo" -> user.loginInfo,
-  //          "firstName" -> user.firstName,
-  //          "lastName" -> user.lastName,
-  //          "fullName" -> user.fullName,
-  //          "email" -> user.email,
-  //          "avatarURL" -> user.avatarURL,
-  //          "activated" -> true,
-  //          "goal" -> user.goal
-  //        )
-  //      ),
-  //      true
-  //    ).map(_.result[User]))
-  //
+  def colGoal: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("goal"))
+
+  def saveGoal(goal: Goal): Future[Goal] = {
+    colGoal.flatMap(_.update(Json.obj("goalID" -> goal.goalID), goal, upsert = true))
+    Future.successful(goal)
+  }
+
+  def colUsersGoal: Future[JSONCollection] = reactiveMongoApi.database.map(_.collection("users_goal"))
+
+  def saveUsersGoal(usersGoal: UsersGoal): Future[UsersGoal] = {
+    colUsersGoal.flatMap(_.update(Json.obj("usersGoalID" -> usersGoal.usersGoalID), usersGoal, upsert = true))
+    Future.successful(usersGoal)
+  }
 }
