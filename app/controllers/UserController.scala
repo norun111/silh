@@ -27,7 +27,11 @@ import repositories._
 import utils.auth.DefaultEnv
 import scala.concurrent.{ ExecutionContext, Future }
 
-class UsersController @Inject() (
+import org.joda.time.DateTime
+import org.joda.time.format._
+import org.joda.time.DateTimeZone
+
+class UserController @Inject() (
     val reactiveMongoApi: ReactiveMongoApi,
     val messagesApi: MessagesApi,
     ec: ExecutionContext,
@@ -38,4 +42,24 @@ class UsersController @Inject() (
     implicit val webJarAssets: WebJarAssets
 ) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
 
+  def show(id: String) = Action {
+    val dateTime = new DateTime()
+    // dateTime: org.joda.time.DateTime = 2014-10-30T09:30:11.634Z
+
+    val dateString = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(dateTime.withZone(DateTimeZone.UTC))
+    // yyyy-MM-dd HH:mm:ss dateString: String = 2014-10-30 09:30:11
+    val nowTime = dateString.toInt
+
+    var greeting = ""
+    if (nowTime >= 4 && nowTime < 10)
+      greeting = "Good Morning"
+    else if (nowTime >= 10 && nowTime < 18)
+      greeting = "Good Afternoon"
+    else if (nowTime >= 18 && nowTime < 23 || nowTime >= 0)
+      greeting = "Good Evening"
+
+    println(greeting)
+
+    Ok(views.html.users.show())
+  }
 }
