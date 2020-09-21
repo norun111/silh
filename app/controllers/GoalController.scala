@@ -8,7 +8,7 @@ import play.api.i18n.Messages
 
 import scala.math._
 //Import ReactiveMongo plug-in
-import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
+import play.modules.reactivemongo.{ MongoController, ReactiveMongoApi, ReactiveMongoComponents }
 
 //Import BSON-JSON conversions/collection
 import com.mohiva.play.silhouette.api.Silhouette
@@ -18,14 +18,14 @@ import forms.TimeForm.timeForm
 import forms.UsersGoalForm.form
 import javax.inject._
 import models.Goal
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.api.mvc._
-import reactivemongo.play.json.collection.{JSONCollection, _}
+import reactivemongo.play.json.collection.{ JSONCollection, _ }
 import repositories._
 import utils.auth.DefaultEnv
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class GoalController @Inject() (
     val reactiveMongoApi: ReactiveMongoApi,
@@ -51,22 +51,14 @@ class GoalController @Inject() (
   val collGoal = MongoConnection()("silhouette")("goal")
   val collUser = MongoConnection()("silhouette")("silhouette.user")
 
+  // list of goals view
   def listGoals(userID: String) = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
-    // input user_goalForm in parameter goal_id -> goal._id user_id -> request.identity.userId
     val uuid = UUID.randomUUID
     goalRepo.list().map {
       goals =>
         Ok(views.html.goals.index(goals, request.identity, uuid.toString, form))
     }
-  }
-
-  def createGoal = Action.async(parse.json) {
-    _.body.validate[Goal].map { goal =>
-      goalRepo.create(goal).map { _ =>
-        Created
-      }
-    }.getOrElse(Future.successful(BadRequest("Invalid format")))
   }
 
   // Error Handle
@@ -99,6 +91,7 @@ class GoalController @Inject() (
       )
   }
 
+  // calculate view
   def calculate(userID: String) = silhouette.SecuredAction.async { implicit request =>
     Future.successful(Ok(views.html.goals.calculate(request.identity, timeForm)))
   }
@@ -114,6 +107,7 @@ class GoalController @Inject() (
       )
   }
 
+  // result view
   def result(userID: String) = silhouette.SecuredAction.async { implicit request =>
     userService.retrieve(request.identity.userID).flatMap {
       case Some(user) =>
@@ -137,6 +131,14 @@ class GoalController @Inject() (
         Ok(Json.toJson(goal))
       }.getOrElse(NotFound)
     }
+  }
+
+  def createGoal = Action.async(parse.json) {
+    _.body.validate[Goal].map { goal =>
+      goalRepo.create(goal).map { _ =>
+        Created
+      }
+    }.getOrElse(Future.successful(BadRequest("Invalid format")))
   }
 
   def updateGoal(id: String) = Action.async(parse.json) { req =>
