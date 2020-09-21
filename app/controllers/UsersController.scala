@@ -28,14 +28,14 @@ import utils.auth.DefaultEnv
 import scala.concurrent.{ ExecutionContext, Future }
 
 class UsersController @Inject() (
-                                 val reactiveMongoApi: ReactiveMongoApi,
-                                 val messagesApi: MessagesApi,
-                                 ec: ExecutionContext,
-                                 silhouette: Silhouette[DefaultEnv],
-                                 userRepo: UserRepository,
-                                 userService: UserService,
-                                 userDAO: UserDAO,
-                                 implicit val webJarAssets: WebJarAssets
-                               ) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
-  
+    val reactiveMongoApi: ReactiveMongoApi,
+    val messagesApi: MessagesApi,
+    ec: ExecutionContext,
+    silhouette: Silhouette[DefaultEnv],
+    userRepo: UserRepository,
+    userService: UserService,
+    userDAO: UserDAO,
+    implicit val webJarAssets: WebJarAssets
+) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
+
 }
