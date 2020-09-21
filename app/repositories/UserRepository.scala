@@ -25,11 +25,14 @@ class UserRepository @Inject() (
 
   private val collection = MongoConnection()("silhouette")("silhouette.user")
 
-  private def col: Future[JSONCollection] =
+  private def usersCol: Future[JSONCollection] =
     reactiveMongoApi.database.map(_.collection("silhouette.user"))
 
+  private def col: Future[JSONCollection] =
+    reactiveMongoApi.database.map(_.collection("users_goal"))
+
   def find(id: String): Future[Option[User]] =
-    col.flatMap(_.find(BSONDocument("userId" -> id)).one[User])
+    usersCol.flatMap(_.find(BSONDocument("userId" -> id)).one[User])
 
   //  def updateUserGoal(id: String, goal: Goal, user: User) = {
   //    val query = MongoDBObject("userId" -> id)
@@ -48,22 +51,4 @@ class UserRepository @Inject() (
   //      "oTime" -> user.oTime
   //    ))
   //  }
-
-  def updateTime(id: String, user: User, goal: Goal, sTime: Int, wTime: Int, oTime: Int) = {
-    val query = MongoDBObject("userId" -> id)
-    collection.update(query, MongoDBObject(
-      "userId" -> user.userID,
-      "loginInfo" -> user.loginInfo,
-      "firstName" -> user.firstName,
-      "lastName" -> user.lastName,
-      "fullName" -> user.fullName,
-      "email" -> user.email,
-      "avatarURL" -> user.avatarURL,
-      "activated" -> user.activated,
-      "goal" -> goal,
-      "sTime" -> sTime,
-      "wTime" -> wTime,
-      "oTime" -> oTime
-    ))
-  }
 }
