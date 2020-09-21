@@ -26,10 +26,11 @@ GET         /account/activate/:token         controllers.ActivateAccountControll
 
 # Goal
 GET         /calculate/:userId               controllers.GoalController.calculate(userId: String)
+GET         /result/:userId                  controllers.GoalController.result(userId: String)
 GET         /goals/:userId                   controllers.GoalController.listGoals(userId: String)
 POST        /goals/create                    controllers.GoalController.createGoal
 GET         /goals/:_id                      controllers.GoalController.readGoal(_id: String)
-POST         /goals/:_id/update               controllers.GoalController.updateGoal(_id: String)
+POST         /goals/:_id/update              controllers.GoalController.updateGoal(_id: String)
 POST        /goals/:id/updateUserTime        controllers.GoalController.updateUserTime(id: String)
 DELETE      /goals/:_id/delete               controllers.GoalController.deleteGoal(_id: String)
 
