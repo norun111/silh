@@ -2,33 +2,30 @@ package controllers
 
 import java.util.UUID
 
-import models.daos.{ GoalDAO, UserDAO, UserDAOImpl, UsersGoalDAO }
-import models.services.{ GoalService, UserService, UsersGoalService }
+import models.daos.UserDAO
+import models.services.UserService
 import play.api.i18n.Messages
 
+import scala.math._
 //Import ReactiveMongo plug-in
-import play.modules.reactivemongo.{ MongoController, ReactiveMongoApi, ReactiveMongoComponents }
+import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMongoComponents}
 
 //Import BSON-JSON conversions/collection
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mongodb.casbah.Imports._
 import com.novus.salat._
-import forms.UsersGoalForm.form
-import forms.UserForm.userForm
 import forms.TimeForm.timeForm
+import forms.UsersGoalForm.form
 import javax.inject._
-import models.{ Goal, _ }
-import play.api.i18n.{ I18nSupport, MessagesApi }
+import models.Goal
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.api.mvc._
-import reactivemongo.play.json.collection.{ JSONCollection, _ }
+import reactivemongo.play.json.collection.{JSONCollection, _}
 import repositories._
 import utils.auth.DefaultEnv
-//import com.novus.salat.global._
-import scala.concurrent.{ ExecutionContext, Future }
-import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.model.Updates._
+import scala.concurrent.{ExecutionContext, Future}
 
 class GoalController @Inject() (
     val reactiveMongoApi: ReactiveMongoApi,
@@ -112,9 +109,26 @@ class GoalController @Inject() (
         formWithErrors => Future.successful(BadRequest(views.html.goals.calculate(request.identity, formWithErrors))),
         time => {
           userService.save(request.identity.copy(sTime = time.sTime, wTime = time.wTime, oTime = time.oTime))
-          Future(Redirect(routes.ApplicationController.index()))
+          Future(Redirect(routes.GoalController.result(id)))
         }
       )
+  }
+
+  def result(userID: String) = silhouette.SecuredAction.async { implicit request =>
+    userService.retrieve(request.identity.userID).flatMap {
+      case Some(user) =>
+        val week_time: Int = 24 * 7 - ((7 * user.sTime) + 5 * (user.wTime) + 7 * (user.oTime))
+        val week_day_time: Int = 24 - (user.sTime + user.wTime + user.oTime)
+        val week_day_end: Int = 24 - (user.sTime + user.oTime)
+        val require_week: Double = user.goal.get.learning_time / week_time
+        val require_month: Double = require_week / 4
+        val monthStr: String = f"$require_month%1.1f"
+        val ceilWeek: Int = round(require_week).toInt
+        //        val now = java.time.LocalDate.now
+        //        val dateAsInt = now.getYear * 10000 + now.getMonthValue * 100 + now.getDayOfMonth
+        //        val achievement_time: Int = dateAsInt + (7 * require_week).toInt
+        Future.successful(Ok(views.html.goals.result(request.identity, week_time, week_day_time, week_day_end, ceilWeek, monthStr)))
+    }
   }
 
   def readGoal(id: String) = Action.async { req =>
