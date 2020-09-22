@@ -15,7 +15,6 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import forms.TimeForm.timeForm
-import forms.UsersGoalForm.form
 import javax.inject._
 import models.Goal
 import play.api.i18n.{ I18nSupport, MessagesApi }
@@ -46,7 +45,7 @@ class UserController @Inject() (
     val dateTime = new DateTime()
     // dateTime: org.joda.time.DateTime = 2014-10-30T09:30:11.634Z
 
-    val dateString = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(dateTime.withZone(DateTimeZone.UTC))
+    val dateString = DateTimeFormat.forPattern("HH").print(dateTime.withZone(DateTimeZone.UTC))
     // yyyy-MM-dd HH:mm:ss dateString: String = 2014-10-30 09:30:11
     val nowTime = dateString.toInt
 
