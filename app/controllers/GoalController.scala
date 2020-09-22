@@ -4,6 +4,7 @@ import java.util.UUID
 
 import models.daos.UserDAO
 import models.services.UserService
+import org.joda.time.DateTime
 import play.api.i18n.Messages
 
 import scala.math._
@@ -15,7 +16,7 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import forms.TimeForm.timeForm
-import forms.UsersGoalForm.form
+import forms.UsersGoalForm.usersGoalForm
 import javax.inject._
 import models.Goal
 import play.api.i18n.{ I18nSupport, MessagesApi }
@@ -55,9 +56,10 @@ class GoalController @Inject() (
   def listGoals(userID: String) = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
     val uuid = UUID.randomUUID
+    val dateTime = DateTime.now
     goalRepo.list().map {
       goals =>
-        Ok(views.html.goals.index(goals, request.identity, uuid.toString, form))
+        Ok(views.html.goals.index(goals, request.identity, uuid.toString, dateTime, usersGoalForm))
     }
   }
 
@@ -66,8 +68,8 @@ class GoalController @Inject() (
 
   def saveUserGoal = silhouette.SecuredAction.async {
     implicit request =>
-      form.bindFromRequest.fold(
-        formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, request.identity.userID, formWithErrors))),
+      usersGoalForm.bindFromRequest.fold(
+        formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, request.identity.userID, DateTime.now, formWithErrors))),
         userGoal => {
           collection.flatMap(_.insert(userGoal))
           goalRepo.find(userGoal.goal_id).flatMap {
