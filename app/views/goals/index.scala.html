@@ -1,4 +1,5 @@
-@(goals :Seq[Goal], user: User, uuid: String, user_goalForm: Form[UsersGoal])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+@import org.joda.time.DateTime
+@(goals :Seq[Goal], user: User, uuid: String, dateTime: DateTime, user_goalForm: Form[UsersGoal])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
 @import helper._
 @main("usersGoalForm", Option(user)) {
@@ -13,6 +14,7 @@
                 }
                 <input id="usersGoalID" name="usersGoalID" type="hidden" value="@uuid">
                 <input id="user_id" name="user_id" type="hidden" value="@user.userID">
+                <input id="stack_time" name="stack_time" type="hidden" value=0>
                 <input id="learning_time" name="learning_time" type="hidden" value=0>
                 <input type="submit" class="btn btn-default" value="submit">
             }
