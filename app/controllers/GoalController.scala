@@ -57,6 +57,7 @@ class GoalController @Inject() (
     // sort by descending "challengers_num"
     val uuid = UUID.randomUUID
     val dateTime = DateTime.now
+    println(dateTime)
     goalRepo.list().map {
       goals =>
         Ok(views.html.goals.index(goals, request.identity, uuid.toString, dateTime, usersGoalForm))
