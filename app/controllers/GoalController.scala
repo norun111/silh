@@ -76,12 +76,12 @@ class GoalController @Inject() (
             case Some(goal) =>
               userService.retrieve(userGoal.user_id).flatMap {
                 case Some(user) =>
-                  userService.save(user.copy(goal = Option(goal)))
+                  userService.save(user.copy(goal = Option(goal))) // userのgoalカラムを更新している
                   //                  userRepo.updateUserGoal(userGoal.user_id, goal, user)
                   val challengers_num = goal.challengers_num + 1
-                  userService.saveGoal(goal.copy(challengers_num = challengers_num))
+                  userService.saveGoal(goal.copy(challengers_num = challengers_num)) // goalのchallengers_numカラムを+1更新している
                   //                  goalRepo.updateChallengersNum(userGoal.goal_id, goal)
-                  userService.saveUsersGoal(userGoal.copy(learning_time = goal.learning_time))
+                  userService.saveUsersGoal(userGoal.copy(learning_time = goal.learning_time)) // users_goalのlearning_timeカラムを更新している
                   //                  usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, goal.learning_time)
                   Future(Redirect(routes.GoalController.calculate(userGoal.user_id)))
                 case None =>
