@@ -1,5 +1,61 @@
-@(user: User)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+@(user: User, greeting: String, usersGoalForm: Form[UsersGoal], userID: String, goalID: String, dateTime: String, uuid: String, usersGoals: List[UsersGoal])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
+    @import helper._
 @main("result_weekTime", Option(user)){
+    <div class="user-greeting">
+        <p>@greeting</p>
+        <p class="user-greeting__name">@user.fullName </p>
+    </div>
 
+    <div class="">
+        @form(action = helper.CSRF(routes.UserController.createProgress())) {
+            <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="stack_time">
+                    <option value="0">Choose...</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                </select>
+            <input name="note" id="" type="text" placeholder="memo">
+            <input id="usersGoalID" name="usersGoalID" type="hidden" value="@uuid">
+            <input id="user_id" name="user_id" type="hidden" value="@userID">
+            <input id="goal_id" name="goal_id" type="hidden" value="@goalID">
+            <input id="created_at" name="created_at" type="hidden" value="@dateTime">
+            <input type="submit" class="btn btn-default" value="register">
+        }
+
+        <div>
+            <ul>
+
+            @for(usersgoal <- usersGoals){
+                    <li class="custom-control custom-radio">
+                        @usersgoal.stack_time
+                        @usersgoal.note
+                        @usersgoal.created_at
+                    </li>
+            }
+            </ul>
+        </div>
+    </div>
 }
