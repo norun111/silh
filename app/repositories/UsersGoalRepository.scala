@@ -3,13 +3,20 @@ package repositories
 import com.mongodb.casbah.Imports.{ MongoConnection, MongoDBObject }
 import javax.inject.Inject
 import models._
+import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.api.Cursor
 import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.collection.JSONCollection
 import reactivemongo.play.json._
+
 import scala.concurrent.{ ExecutionContext, Future }
 //import reactivemongo.api.bson.{ BSONObjectID }
+
 import scala.concurrent.ExecutionContext.Implicits.global
+
+import reactivemongo.bson.BSONDocument
+import reactivemongo.api.collections.bson.BSONCollection
 
 class UsersGoalRepository @Inject() (
     implicit
@@ -21,30 +28,8 @@ class UsersGoalRepository @Inject() (
 
   val col = MongoConnection()("silhouette")("users_goal")
 
-  //  def update(id: String, leaning_time: Double, users_goal: UsersGoal): Future[Option[UsersGoal]] =
-  //    collection.flatMap(_.findAndUpdate(
-  //      BSONDocument("usersGoalID" -> id),
-  //      BSONDocument(
-  //        f"$$set" -> BSONDocument(
-  //          "usersGoalID" -> users_goal.usersGoalID,
-  //          "user_id" -> users_goal.user_id,
-  //          "goal_id" -> users_goal.goal_id,
-  //          "stack_time" -> users_goal.stack_time,
-  //          "learning_time" -> leaning_time,
-  //          "created_at" -> users_goal.created_at
-  //        )
-  //      ),
-  //      true
-  //    ).map(_.result[UsersGoal]))
-
-  //  def updateLearningTime(id: String, users_goal: UsersGoal, learning_time: Double) = {
-  //    val query = MongoDBObject("usersGoalID" -> id)
-  //    col.update(query, MongoDBObject(
-  //      "usersGoalID" -> users_goal.usersGoalID,
-  //      "user_id" -> users_goal.user_id,
-  //      "goal_id" -> users_goal.goal_id,
-  //      "learning_time" -> learning_time
-  //    ))
-  //  }
+  def findAll(userID: String)(implicit ec: ExecutionContext): Future[List[UsersGoal]] =
+    collection.flatMap(_.find(BSONDocument("user_id" -> userID)).cursor[UsersGoal]().
+      collect[List](100, Cursor.FailOnError[List[UsersGoal]]()))
 
 }
