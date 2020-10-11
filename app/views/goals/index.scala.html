@@ -1,5 +1,5 @@
 @import org.joda.time.DateTime
-@(goals :Seq[Goal], user: User, uuid: String, dateTime: DateTime, user_goalForm: Form[UsersGoal])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+@(goals :Seq[Goal], user: User, uuid: String, dateTime: String, user_goalForm: Form[UsersGoal])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
 @import helper._
 @main("usersGoalForm", Option(user)) {
