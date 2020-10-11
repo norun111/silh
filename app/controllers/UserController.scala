@@ -41,7 +41,7 @@ class UserController @Inject() (
     implicit val webJarAssets: WebJarAssets
 ) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
 
-  def show(id: String) = Action {
+  def show(id: String) = silhouette.SecuredAction.async { implicit request =>
     val dateTime = new DateTime()
     // dateTime: org.joda.time.DateTime = 2014-10-30T09:30:11.634Z
 
@@ -58,7 +58,12 @@ class UserController @Inject() (
       greeting = "Good Evening"
 
     println(greeting)
+    userService.retrieve(request.identity.userID).flatMap {
+      case Some(user) =>
+        Future.successful(Ok(views.html.users.show(user)))
+      case None =>
+        Future.successful(Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.activation.link")))
+    }
 
-    Ok(views.html.users.show())
   }
 }
