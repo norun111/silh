@@ -2,10 +2,10 @@
 
 @main("result_weekTime", Option(user)){
     <div class="time-wrapper">
-        <p>Weekdays: @week_day_time hours</p>
-        <p>Holiday: @week_day_end hours</p>
-        <p>@week_time hours</p>
-        <p>@require_week weeks (@require_month months)</p>
+        <p>平日時間 @week_day_time hours</p>
+        <p>休日時間 @week_day_end hours</p>
+        <p>1週間で @week_time hours ずつ積み上げれば</p>
+        <p>@require_week 週間 (@require_month ヶ月)後 @user.goal.get.name になっているかもしれません</p>
 
         <a href="@routes.UserController.show(user.userID)" class="btn btn-primary stretched-link">Start</a>
     </div>
