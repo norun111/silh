@@ -1,8 +1,9 @@
 package models
 
-import java.util.UUID
+import java.time.LocalDateTime
+import java.util.{ Date, UUID }
 
-import org.joda.time.DateTime
+import org.joda.time.{ DateTime, LocalDate }
 import org.joda.time.format.DateTimeFormat
 import reactivemongo.bson.BSONObjectID
 import play.api.libs.functional.syntax.unlift
@@ -17,7 +18,7 @@ case class UsersGoal(
   stack_time: Double,
   note: String,
   learning_time: Double,
-  created_at: DateTime
+  created_at: String
 )
 
 object UsersGoal {
@@ -35,15 +36,16 @@ object UsersGoal {
     }
   }
 
-  val dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+  implicit val usersGoalFormat: OFormat[UsersGoal] = Json.format[UsersGoal]
 
-  val jodaDateReads = Reads[DateTime](js =>
-    js.validate[String].map[DateTime](dtString =>
-      DateTime.parse(dtString, DateTimeFormat.forPattern(dateFormat))))
-
-  val jodaDateWrites: Writes[DateTime] = new Writes[DateTime] {
-    def writes(d: DateTime): JsValue = JsString(d.toString())
-  }
+//  val dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+//  implicit val jodaDateReads = Reads[DateTime](js =>
+//    js.validate[String].map[DateTime](dtString =>
+//      DateTime.parse(dtString, DateTimeFormat.forPattern(dateFormat))))
+//
+//  implicit val jodaDateWrites: Writes[DateTime] = new Writes[DateTime] {
+//    def writes(d: DateTime): JsValue = JsString(d.toString())
+//  }
 
   //  val usersGoalReads: Reads[UsersGoal] = (
   //    (JsPath \ "usersGoalID").read[String] and
@@ -71,6 +73,4 @@ object UsersGoal {
   //    (JsPath \ "learning_time").format[Double] and
   //    (JsPath \ "created_at").format[DateTime](jodaDateWrites)(jodaDateReads)
   //  )(UsersGoal.apply, unlift(UsersGoal.unapply))
-
-  implicit val goalFormat: OFormat[UsersGoal] = Json.format[UsersGoal]
 }
