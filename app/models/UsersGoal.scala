@@ -38,14 +38,14 @@ object UsersGoal {
 
   implicit val usersGoalFormat: OFormat[UsersGoal] = Json.format[UsersGoal]
 
-//  val dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-//  implicit val jodaDateReads = Reads[DateTime](js =>
-//    js.validate[String].map[DateTime](dtString =>
-//      DateTime.parse(dtString, DateTimeFormat.forPattern(dateFormat))))
-//
-//  implicit val jodaDateWrites: Writes[DateTime] = new Writes[DateTime] {
-//    def writes(d: DateTime): JsValue = JsString(d.toString())
-//  }
+  //  val dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+  //  implicit val jodaDateReads = Reads[DateTime](js =>
+  //    js.validate[String].map[DateTime](dtString =>
+  //      DateTime.parse(dtString, DateTimeFormat.forPattern(dateFormat))))
+  //
+  //  implicit val jodaDateWrites: Writes[DateTime] = new Writes[DateTime] {
+  //    def writes(d: DateTime): JsValue = JsString(d.toString())
+  //  }
 
   //  val usersGoalReads: Reads[UsersGoal] = (
   //    (JsPath \ "usersGoalID").read[String] and
