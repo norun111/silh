@@ -1,6 +1,7 @@
 package controllers
 
-import java.util.UUID
+import java.time.LocalDate
+import java.util.{ Date, UUID }
 
 import models.daos.UserDAO
 import models.services.UserService
@@ -56,7 +57,7 @@ class GoalController @Inject() (
   def listGoals(userID: String) = silhouette.SecuredAction.async { implicit request =>
     // sort by descending "challengers_num"
     val uuid = UUID.randomUUID
-    val dateTime = DateTime.now
+    val dateTime = "%tY/%<tm/%<td %<tR" format new Date
     println(dateTime)
     goalRepo.list().map {
       goals =>
@@ -71,7 +72,7 @@ class GoalController @Inject() (
     implicit request =>
       usersGoalForm.bindFromRequest.fold(
         //        エラー表示
-        formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, request.identity.userID, DateTime.now, formWithErrors))),
+        formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, request.identity.userID, "%tY/%<tm/%<td %<tR" format new Date, formWithErrors))),
         userGoal => {
           collection.flatMap(_.insert(userGoal))
           goalRepo.find(userGoal.goal_id).flatMap {
