@@ -69,6 +69,7 @@ class GoalController @Inject() (
   def saveUserGoal = silhouette.SecuredAction.async {
     implicit request =>
       usersGoalForm.bindFromRequest.fold(
+        //        エラー表示
         formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, request.identity.userID, DateTime.now, formWithErrors))),
         userGoal => {
           collection.flatMap(_.insert(userGoal))
