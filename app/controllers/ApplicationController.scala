@@ -39,9 +39,12 @@ class ApplicationController @Inject() (
    */
   def index = silhouette.SecuredAction.async { implicit request =>
     if (request.identity.goal == Nil) {
-      Future.successful(Ok(views.html.home(request.identity)))
+//      ログインユーザーが目標を設定していなかったら登録ページにリダイレクト
+      Future.successful(Redirect(routes.GoalController.listGoals(request.identity.userID)))
     } else {
-      Future(Redirect(routes.GoalController.listGoals(request.identity.userID)))
+//      ログインユーザーが目標を設定していたらshowページにリダイレクト
+      println(request.identity)
+      Future(Redirect(routes.UserController.show(request.identity.userID)))
     }
   }
 
