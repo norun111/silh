@@ -15,7 +15,9 @@ case class UsersGoal(
   user_id: String,
   goal_id: String,
   stack_time: Double,
-  learning_time: Double
+  note: String,
+  learning_time: Double,
+  created_at: DateTime
 )
 
 object UsersGoal {
