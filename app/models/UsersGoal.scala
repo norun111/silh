@@ -34,7 +34,7 @@ object UsersGoal {
     }
   }
 
-  val dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+  val dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
 
   val jodaDateReads = Reads[DateTime](js =>
     js.validate[String].map[DateTime](dtString =>
@@ -44,23 +44,23 @@ object UsersGoal {
     def writes(d: DateTime): JsValue = JsString(d.toString())
   }
 
-  val usersGoalReads: Reads[UsersGoal] = (
-    (JsPath \ "usersGoalID").read[String] and
-    (JsPath \ "user_id").read[String] and
-    (JsPath \ "goal_id").read[String] and
-    (JsPath \ "stack_time").read[Double] and
-    (JsPath \ "learning_time").read[Double] and
-    (JsPath \ "created_at").read[DateTime](jodaDateReads)
-  )(UsersGoal.apply _)
-
-  val usersGoalWrites: Writes[UsersGoal] = (
-    (JsPath \ "usersGoalID").write[String] and
-    (JsPath \ "user_id").write[String] and
-    (JsPath \ "goal_id").write[String] and
-    (JsPath \ "stack_time").write[Double] and
-    (JsPath \ "learning_time").write[Double] and
-    (JsPath \ "created_at").write[DateTime](jodaDateWrites)
-  )(unlift(UsersGoal.unapply))
+  //  val usersGoalReads: Reads[UsersGoal] = (
+  //    (JsPath \ "usersGoalID").read[String] and
+  //    (JsPath \ "user_id").read[String] and
+  //    (JsPath \ "goal_id").read[String] and
+  //    (JsPath \ "stack_time").read[Double] and
+  //    (JsPath \ "learning_time").read[Double] and
+  //    (JsPath \ "created_at").read[DateTime](jodaDateReads)
+  //  )(UsersGoal.apply _)
+  //
+  //  val usersGoalWrites: OWrites[UsersGoal] = (
+  //    (JsPath \ "usersGoalID").write[String] and
+  //    (JsPath \ "user_id").write[String] and
+  //    (JsPath \ "goal_id").write[String] and
+  //    (JsPath \ "stack_time").write[Double] and
+  //    (JsPath \ "learning_time").write[Double] and
+  //    (JsPath \ "created_at").write[DateTime](jodaDateWrites)
+  //  )(unlift(UsersGoal.unapply))
 
   //  implicit val goalFormat: OFormat[UsersGoal] = (
   //    (JsPath \ "usersGoalID").format[String] and
