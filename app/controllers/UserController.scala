@@ -1,6 +1,6 @@
 package controllers
 
-import java.util.UUID
+import java.util.{ Date, Locale, UUID }
 
 import models.daos.UserDAO
 import models.services.UserService
@@ -42,12 +42,13 @@ class UserController @Inject() (
 ) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
 
   def show(id: String) = silhouette.SecuredAction.async { implicit request =>
-    val dateTime = new DateTime()
-    // dateTime: org.joda.time.DateTime = 2014-10-30T09:30:11.634Z
-
-    val dateString = DateTimeFormat.forPattern("HH").print(dateTime.withZone(DateTimeZone.UTC))
-    // yyyy-MM-dd HH:mm:ss dateString: String = 2014-10-30 09:30:11
-    val nowTime = dateString.toInt
+    val dateTime = "%tY/%<tm/%<td %<tR" format new Date
+    println(dateTime)
+    val dateSplit = dateTime.split(" ")
+    val timeSplit = dateSplit(1).split(":")
+    val hour = timeSplit(0)
+    println(hour)
+    val nowTime = hour.toInt
 
     var greeting = ""
     if (nowTime >= 4 && nowTime < 10)
