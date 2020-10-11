@@ -14,7 +14,9 @@ object UsersGoalForm {
       "user_id" -> text,
       "goal_id" -> text,
       "stack_time" -> of(doubleFormat),
-      "learning_time" -> of(doubleFormat)
+      "note" -> text,
+      "learning_time" -> of(doubleFormat),
+      "created_at" -> jodaDate
     )(UsersGoal.apply)(UsersGoal.unapply)
   )
 
