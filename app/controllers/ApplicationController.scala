@@ -44,6 +44,8 @@ class ApplicationController @Inject() (
       case Some(user) =>
         if (user.goal == None) {
           Future.successful(Redirect(routes.GoalController.listGoals(user.userID)))
+        } else if (user.sTime == None || user.wTime == None || user.oTime == None) {
+          Future.successful(Redirect(routes.GoalController.calculate(user.userID)))
         } else {
           Future(Redirect(routes.UserController.show(request.identity.userID)))
         }
