@@ -2,6 +2,7 @@ package controllers
 
 import java.util.{ Date, Locale, UUID }
 
+import forms.UsersGoalForm.usersGoalForm
 import models.daos.UserDAO
 import models.services.UserService
 import play.api.i18n.Messages
@@ -36,18 +37,22 @@ class UserController @Inject() (
     ec: ExecutionContext,
     silhouette: Silhouette[DefaultEnv],
     userRepo: UserRepository,
+    goalRepo: GoalRepository,
+    usersGoalRepo: UsersGoalRepository,
     userService: UserService,
     userDAO: UserDAO,
     implicit val webJarAssets: WebJarAssets
 ) extends Controller with I18nSupport with MongoController with ReactiveMongoComponents {
 
+  private def collection: Future[JSONCollection] =
+    reactiveMongoApi.database.map(_.collection("users_goal"))
+
   def show(id: String) = silhouette.SecuredAction.async { implicit request =>
+    val uuid = UUID.randomUUID.toString
     val dateTime = "%tY/%<tm/%<td %<tR" format new Date
-    println(dateTime)
     val dateSplit = dateTime.split(" ")
     val timeSplit = dateSplit(1).split(":")
     val hour = timeSplit(0)
-    println(hour)
     val nowTime = hour.toInt
 
     var greeting = ""
@@ -58,13 +63,40 @@ class UserController @Inject() (
     else if (nowTime >= 18 && nowTime < 23 || nowTime >= 0)
       greeting = "Good Evening"
 
-    println(greeting)
     userService.retrieve(request.identity.userID).flatMap {
       case Some(user) =>
-        Future.successful(Ok(views.html.users.show(user)))
+        //        ユーザーのshowページへのリダイレクト
+        usersGoalRepo.findAll(user.userID).flatMap { usersGoals =>
+          Future.successful(Ok(views.html.users.show(user, greeting, usersGoalForm, user.userID, user.goal.get.goalID, dateTime, uuid, usersGoals)))
+        }
       case None =>
         Future.successful(Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.activation.link")))
     }
+  }
 
+  // Error Handle
+  val testGoal: Seq[Goal] = Seq(Goal(goalID = "Error", name = "Error", learning_time = 1000, challengers_num = 0))
+  //  進捗の保存
+  def createProgress = silhouette.SecuredAction.async {
+    implicit request =>
+      usersGoalForm.bindFromRequest.fold(
+        //        エラー表示
+        formWithErrors => Future(BadRequest(views.html.goals.index(testGoal, request.identity, request.identity.userID, "%tY/%<tm/%<td %<tR" format new Date, formWithErrors))),
+        userGoal => {
+          collection.flatMap(_.insert(userGoal))
+          goalRepo.find(userGoal.goal_id).flatMap {
+            case Some(goal) =>
+              userService.retrieve(userGoal.user_id).flatMap {
+                case Some(user) =>
+                  userService.saveUsersGoal(userGoal.copy(learning_time = userGoal.learning_time)) // users_goalのlearning_timeカラムを更新している
+                  //                  usersGoalRepo.updateLearningTime(userGoal.usersGoalID, userGoal, goal.learning_time)
+                  Future(Redirect(routes.GoalController.calculate(userGoal.user_id)))
+                case None =>
+                  Future.successful(Redirect(routes.GoalController.listGoals(userGoal.user_id)).flashing("error" -> Messages("invalid")))
+              }
+            case None => Future.successful(Redirect(routes.GoalController.listGoals(userGoal.user_id)).flashing("error" -> Messages("invalid")))
+          }
+        }
+      )
   }
 }
